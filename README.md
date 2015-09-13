@@ -26,6 +26,14 @@ counterTask.run({c: 0}).then((obj) => {
 });
 ```
 
+```sh
+$ babel-node example
+Counter: 0
+Counter: 1
+Counter: 2
+Result: 3
+```
+
 [natron-img]: http://static.natronjs.com/img/natronjs.svg
 [natron-url]: http://natronjs.com
 [npm-img]: http://img.shields.io/npm/v/natron-core.svg
