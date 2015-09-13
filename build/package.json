@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "dependencies": {
+    "gulp-babel": "^5.2.0",
+    "natron": "^0.1.0",
+    "vinyl-fs": "^1.0.0"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "natron-core",
+  "version": "0.1.0",
+  "description": "Tasks with Promises.",
+  "keywords": [
+    "task",
+    "promise"
+  ],
+  "author": "Stefan Rumzucker",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natronjs/natron-core.git"
+  },
+  "main": "dist/cjs/index",
+  "scripts": {
+    "build": "natron build",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "object-assign": "^4.0.0",
+    "yaee": "^0.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "^5.8.0"
+  },
+  "license": "MIT"
+}

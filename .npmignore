@@ -1,0 +1,10 @@
+#
+# .npmignore
+#
+
+# --------------------------------------
+/build
+/docs
+/test
+/.editorconfig
+/.natronrc
