@@ -1,7 +1,7 @@
 {
   "name": "natron-core",
   "version": "0.1.0",
-  "description": "Tasks with Promises.",
+  "description": "Tasks with Promises",
   "keywords": [
     "task",
     "promise"
@@ -11,11 +11,11 @@
     "type": "git",
     "url": "git+https://github.com/natronjs/natron-core.git"
   },
-  "main": "dist/cjs/index",
   "scripts": {
-    "build": "natron build",
+    "build": "npm --prefix build run build",
     "build-install": "npm --prefix build install",
-    "test": "mocha"
+    "test": "npm --prefix test test",
+    "test-install": "npm --prefix test install"
   },
   "dependencies": {
     "object-assign": "^4.0.0",

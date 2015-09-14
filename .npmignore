@@ -8,4 +8,5 @@
 /test
 /.editorconfig
 /.natronrc
+/.travis.yml
 /*.tgz

@@ -1,7 +1,7 @@
 # [![natron-core][natron-img]][natron-url]
-**Tasks with Promises.**
+**Tasks with Promises**
 
-[![npm][npm-img]][npm-url] [![gitter][gitter-img]][gitter-url]
+[![npm version][npm-img]][npm-url] [![npm dlm][dlm-img]][dlm-url] [![build status][travis-img]][travis-url] [![gitter chat][gitter-img]][gitter-url]
 
 This module is part of [Natron][natron-url] and contains the core functionality of the task runner.
 
@@ -38,5 +38,9 @@ Result: 3
 [natron-url]: http://natronjs.com
 [npm-img]: http://img.shields.io/npm/v/natron-core.svg
 [npm-url]: https://npmjs.org/package/natron-core
+[dlm-img]: https://img.shields.io/npm/dm/natron-core.svg
+[dlm-url]: https://npmjs.org/package/natron-core
+[travis-img]: https://travis-ci.org/natronjs/natron-core.svg
+[travis-url]: https://travis-ci.org/natronjs/natron-core
 [gitter-img]: https://badges.gitter.im/Join%20Chat.svg
 [gitter-url]: https://gitter.im/natronjs/natron
