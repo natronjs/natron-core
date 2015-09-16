@@ -1,7 +1,23 @@
-# [![natron-core][natron-img]][natron-url]
+# [![Natron][natron-img]][natron-url]
+
+[natron-img]: http://static.natronjs.com/img/natronjs.svg
+[natron-url]: http://natronjs.com/
+
 **Tasks with Promises**
 
-[![npm version][npm-img]][npm-url] [![npm dlm][dlm-img]][dlm-url] [![build status][travis-img]][travis-url] [![gitter chat][gitter-img]][gitter-url]
+[![Version][npm-img]][npm-url]
+[![Downloads][dlm-img]][npm-url]
+[![Build Status][travis-img]][travis-url]
+
+[![Gitter Chat][gitter-img]][gitter-url]
+
+[npm-img]: https://img.shields.io/npm/v/natron-core.svg
+[npm-url]: https://npmjs.org/package/natron-core
+[dlm-img]: https://img.shields.io/npm/dm/natron-core.svg
+[travis-img]: https://travis-ci.org/natronjs/natron-core.svg
+[travis-url]: https://travis-ci.org/natronjs/natron-core
+[gitter-img]: https://badges.gitter.im/Join%20Chat.svg
+[gitter-url]: https://gitter.im/natronjs/natron
 
 This module is part of [Natron][natron-url] and contains the core functionality of the task runner.
 
@@ -33,14 +49,3 @@ Counter: 1
 Counter: 2
 Result: 3
 ```
-
-[natron-img]: http://static.natronjs.com/img/natronjs.svg
-[natron-url]: http://natronjs.com
-[npm-img]: http://img.shields.io/npm/v/natron-core.svg
-[npm-url]: https://npmjs.org/package/natron-core
-[dlm-img]: https://img.shields.io/npm/dm/natron-core.svg
-[dlm-url]: https://npmjs.org/package/natron-core
-[travis-img]: https://travis-ci.org/natronjs/natron-core.svg
-[travis-url]: https://travis-ci.org/natronjs/natron-core
-[gitter-img]: https://badges.gitter.im/Join%20Chat.svg
-[gitter-url]: https://gitter.im/natronjs/natron

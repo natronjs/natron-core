@@ -4,14 +4,14 @@
 import {resolve} from "path";
 import {task} from "natron";
 import {src, dest} from "vinyl-fs";
+import {BabelTransformer} from "./transformer";
 
 const PKG_DIR = resolve(__dirname, "..");
 
-function builder(babelOpts: object, out: string) {
-  return function () {
-    let babel = require("gulp-babel");
+function builder(babelOptions: object, out: string) {
+  return () => {
     return (src(resolve(PKG_DIR, "src", "**/*.js"))
-      .pipe(babel(babelOpts))
+      .pipe(new BabelTransformer(babelOptions))
       .pipe(dest(resolve(PKG_DIR, "dist", out)))
     );
   };

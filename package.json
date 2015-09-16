@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "description": "Tasks with Promises",
   "keywords": [
+    "natron",
     "task",
+    "runner",
     "promise"
   ],
+  "homepage": "http://natronjs.com/",
   "author": "Stefan Rumzucker",
   "repository": {
     "type": "git",
