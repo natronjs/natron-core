@@ -16,9 +16,9 @@
   },
   "scripts": {
     "build": "npm --prefix build run build",
-    "build-install": "npm --prefix build install",
+    "build-install": "npm --prefix build install --production",
     "test": "npm --prefix test test",
-    "test-install": "npm --prefix test install"
+    "test-install": "npm --prefix test install --production"
   },
   "dependencies": {
     "object-assign": "^4.0.0",

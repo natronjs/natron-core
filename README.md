@@ -22,30 +22,68 @@
 This module is part of [Natron][natron-url] and contains the core functionality of the task runner.
 
 ## Usage
+### Example
 
 ```js
 import {task} from "natron-core";
 
-let counterFn = (obj) => {
-  console.log("Counter:", obj.c++);
-  return obj;
-};
+let clean = task((target, env) => {
+  console.log("[>]", `Cleaning ${target} @ ${env}`);
+  return working(() => {
+    console.log("[<]", `Cleaning ${target} @ ${env}`);
+  });
+});
 
-let counterTask = task([
-  counterFn,
-  counterFn,
-  counterFn,
+let build = task((target, env) => {
+  console.log("[>]", `Building ${target} @ ${env}`);
+  return working(() => {
+    console.log("[<]", `Building ${target} @ ${env}`);
+  });
+});
+
+let steps = task([clean, build]);
+
+let builder = task.set([
+  (env) => steps.run("A", env),
+  (env) => steps.run("B", env),
 ]);
 
-counterTask.run({c: 0}).then((obj) => {
-  console.log("Result:", obj.c);
+builder.run("production").then(() => {
+  console.log("[#]", "Done");
 });
 ```
 
-```sh
-$ babel-node example
-Counter: 0
-Counter: 1
-Counter: 2
-Result: 3
+```js
+function working(fn) {
+  return new Promise((r) => {
+    setTimeout(() => r(fn()), Math.random() * 1e3);
+  });
+}
+```
+
+## API
+
+### Task
+#### Methods
+
+```js
+Task.prototype.run([...args: any]): Promise;
+```
+
+### _Functions_
+
+```js
+task(thing: Function|Array|Set|iterable): Task;
+```
+
+```js
+task.sequence(thing: iterable): SequenceTask;
+```
+
+```js
+task.set(thing: iterable): SetTask;
+```
+
+```js
+task.run(thing: Task|Function|iterable): Promise;
 ```
