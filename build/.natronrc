@@ -1,3 +1,6 @@
 {
-  "transpiler": "babel"
+  "transpiler": "babel",
+  "logging": {
+    "wrapConsole": true
+  }
 }

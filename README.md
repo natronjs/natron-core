@@ -8,6 +8,7 @@
 [![Version][npm-img]][npm-url]
 [![Downloads][dlm-img]][npm-url]
 [![Build Status][travis-img]][travis-url]
+[![Readme][readme-img]][readme-url]
 
 [![Gitter Chat][gitter-img]][gitter-url]
 
@@ -16,74 +17,99 @@
 [dlm-img]: https://img.shields.io/npm/dm/natron-core.svg
 [travis-img]: https://travis-ci.org/natronjs/natron-core.svg
 [travis-url]: https://travis-ci.org/natronjs/natron-core
+[readme-img]: https://img.shields.io/badge/read-me-orange.svg
+[readme-url]: https://natron.readme.io/
+
 [gitter-img]: https://badges.gitter.im/Join%20Chat.svg
 [gitter-url]: https://gitter.im/natronjs/natron
 
 This module is part of [Natron][natron-url] and contains the core functionality of the task runner.
 
 ## Usage
-### Example
+
+Compose tasks to run in sequence or in parallel.
 
 ```js
 import {task} from "natron-core";
 
-let clean = task((target, env) => {
-  console.log("[>]", `Cleaning ${target} @ ${env}`);
-  return working(() => {
-    console.log("[<]", `Cleaning ${target} @ ${env}`);
+function fn1()  { return 1; }
+function fn2()  { return 2; }
+function fnX(x) { return x; }
+
+// Sequence: Tasks will be run in sequence
+// fn1(3) -> fn2(3) -> fnX(3)
+task([fn1, fn2, fnX]).run(3)
+  .then((res) => {
+    // res = [1, 2, 3]
+  })
+  .catch((err) => {
+    // handle error
   });
+
+// Set: Tasks will be run in parallel
+// fn1(3) || fn2(3) || fnX(3)
+task([fn1, fn2, fnX]).run(3)
+  .then((res) => {
+    // res = [1, 2, 3]
+  })
+  .catch((err) => {
+    // handle error
+  });
+```
+
+```js
+import {task} from "natron-core";
+
+// => fn1(3) -> (fn2(3) || fnX(3))
+task([fn1, [[fn2, fnX]]]).run(3)
+  .then((res) => {
+    // res = [1, [2, 3]]
+  })
+  .catch((err) => {
+    // handle error
+  });
+```
+
+```js
+import {task} from "natron-core";
+
+function fn(v) { return `<${v}>`; }
+
+// => fn(".") -> fn("<.>") -> fn("<<.>>")
+task([fn, fn, fn], {
+  options: {pipe: true},
+}).run(".")
+  .then((res) => {
+    // res = "<<<.>>>"
+  })
+  .catch((err) => {
+    // handle error
+  });
+```
+
+```js
+import {EventEmitter} from "events";
+import {task} from "natron-core";
+
+let ee = new EventEmitter();
+
+ee.on("start", (e) => {
+  // e = {task, context}
 });
 
-let build = task((target, env) => {
-  console.log("[>]", `Building ${target} @ ${env}`);
-  return working(() => {
-    console.log("[<]", `Building ${target} @ ${env}`);
-  });
+ee.on("finish", (e) => {
+  // e = {task, context, value}
 });
 
-let steps = task([clean, build]);
-
-let builder = task.set([
-  (env) => steps.run("A", env),
-  (env) => steps.run("B", env),
-]);
-
-builder.run("production").then(() => {
-  console.log("[#]", "Done");
+ee.on("error", (e) => {
+  // e = {task, context, error}
 });
-```
 
-```js
-function working(fn) {
-  return new Promise((r) => {
-    setTimeout(() => r(fn()), Math.random() * 1e3);
+task([/* ... */]).runWithContext({
+  args: [/* ... */],
+  eventAggregator: ee,
+})
+  .then((res) => {
+    // ...
   });
-}
-```
-
-## API
-
-### Task
-#### Methods
-
-```js
-Task.prototype.run([...args: any]): Promise;
-```
-
-### _Functions_
-
-```js
-task(thing: Function|Array|Set|iterable): Task;
-```
-
-```js
-task.sequence(thing: iterable): SequenceTask;
-```
-
-```js
-task.set(thing: iterable): SetTask;
-```
-
-```js
-task.run(thing: Task|Function|iterable): Promise;
 ```

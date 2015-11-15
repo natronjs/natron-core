@@ -2,15 +2,14 @@
 # .travis.yml
 #
 
-language: node_js
+language: "node_js"
 
 node_js:
-  - 0.12
-  - 4.0
+  - "stable"
 
 install:
-  - npm install
-  - npm run test-install
+  - "npm install"
+  - "npm --prefix test install"
 
 script:
-  - npm test
+  - "test/node_modules/.bin/mocha"

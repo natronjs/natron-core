@@ -4,7 +4,7 @@
 
 # --------------------------------------
 /build
-/docs
+/examples
 /test
 /.editorconfig
 /.natronrc

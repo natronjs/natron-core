@@ -1,85 +1,51 @@
-/*
- * natron-core
- */
-"use strict";
 
-import { Event } from "yaee";
 
-class TaskContext {
+export class TaskContext {
 
-  constructor({ args, stack }) {
-    this.args = args || [];
-    this.stack = stack instanceof TaskStack ? stack : TaskStack.create(stack);
-  }
-
-  static create({ args, stack }) {
-    return new TaskContext({ args, stack });
-  }
-
-  static from(c) {
-    let stack = TaskStack.from(c.stack);
-    return TaskContext.create({ args: c.args, stack });
-  }
-}
-
-export { TaskContext };
-
-class TaskStack {
-
-  constructor(stack) {
-    if (!(stack instanceof Array)) {
-      stack = stack && [stack] || [];
+  constructor(init) {
+    init = init || {};
+    if (!init.stack) {
+      init.stack = [];
+    } else if (!(init.stack instanceof Array)) {
+      throw new TypeError(`${ init.stack } is not an array`);
     }
-    this.stack = stack;
+    if (!init.args) {
+      init.args = [];
+    } else if (!(init.args instanceof Array)) {
+      throw new TypeError(`${ init.args } is not an array`);
+    }
+    Object.assign(this, init);
   }
 
-  push(t) {
-    this.stack.push(t);
-    return t;
-  }
-
-  pop() {
-    return this.stack.pop();
-  }
-
-  get first() {
-    return this.stack[0];
-  }
-
-  get last() {
+  get task() {
     return this.stack[this.stack.length - 1];
   }
 
-  dispatchEvent(e) {
-    for (let i = this.stack.length - 1; i > -1; i--) {
-      let task = this.stack[i];
-      if (task.dispatchEvent) {
-        task.dispatchEvent(e);
+  publish(type, e) {
+    if (this.eventAggregator) {
+      let ea = this.eventAggregator;
+      if (ea instanceof Function) {
+        return ea(type, e);
+      }
+      let fn = ea.emit || ea.publish || ea.trigger;
+      if (fn) {
+        return fn.call(ea, type, e);
       }
     }
   }
 
-  static create(stack) {
-    return new TaskStack(stack);
+  clone(init) {
+    let context = Object.create(TaskContext.prototype);
+    init = init || {};
+    if (init.stack === true) {
+      init.stack = this.stack.slice();
+    }
+    if (init.args === true) {
+      init.args = this.args.slice();
+    }
+    Object.assign(context, this, init);
+    return context;
   }
-
-  static from(s) {
-    return TaskStack.create(s && s.stack.slice());
-  }
-}
-
-export { TaskStack };
-
-class TaskEvent extends Event {
-
-  constructor(type, init) {
-    super(type, init);
-    this.context = init && init.context;
-  }
-
-  static create(type, { context }) {
-    return new TaskEvent(type, { context });
-  }
-}
-
-export { TaskEvent };
+} /*
+   * natron-core
+   */

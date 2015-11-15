@@ -1,10 +1,13 @@
 /*
  * natron-core
  */
+import type {Stream} from "stream";
+import type {ChildProcess} from "child_process";
+import type {EventEmitter} from "events";
 
-export function callWithPromise(self: object, fn: Function, ...args?: any): Promise {
-  if (this || self instanceof Function) {
-    [self, fn, args] = [this, self, [fn, ...args]];
+export function callAndPromise(fn: Function, self: object, ...args: any): Promise {
+  if (this) {
+    [fn, self, args] = [this, fn, [self, ...args]];
   }
   try {
     let result = fn.call(self, ...args);
@@ -22,30 +25,11 @@ export function callWithPromise(self: object, fn: Function, ...args?: any): Prom
   }
 }
 
-interface Emitter {
-  emit: Function;
-}
-
-interface EmitterFn {
-  (type: string, ...args: any): void;
-}
-
-export function emitWrapper(ee: Emitter, fn: EmitterFn): Function {
-  let emit = ee.emit;
-  ee.emit = (type: string, ...args: any) => {
-    fn(type, ...args);
-    return ee::emit(type, ...args);
-  };
-  return (rr: Function, value: any) => {
-    ee.emit = emit;
-    return rr(value);
-  }
-}
-
 export function streamToPromise(stream: Stream): Promise {
   return new Promise((resolve, reject) => {
     let reset = emitWrapper(stream, (type: string, ...args: any) => {
       switch (type) {
+        case "end":
         case "finish": {
           return reset(resolve, {stream});
         }
@@ -70,4 +54,16 @@ export function childProcessToPromise(child: ChildProcess): Promise {
       }
     });
   });
+}
+
+export function emitWrapper(ee: EventEmitter, fn: Function): Function {
+  let emit = ee.emit;
+  ee.emit = (type: string, ...args: any) => {
+    fn(type, ...args);
+    return emit.call(ee, type, ...args);
+  };
+  return (rr: Function, value: any) => {
+    ee.emit = emit;
+    return rr(value);
+  }
 }
