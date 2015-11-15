@@ -48,7 +48,7 @@ task([fn1, fn2, fnX]).run(3)
 
 // Set: Tasks will be run in parallel
 // fn1(3) || fn2(3) || fnX(3)
-task([fn1, fn2, fnX]).run(3)
+task([[fn1, fn2, fnX]]).run(3)
   .then((res) => {
     // res = [1, 2, 3]
   })
