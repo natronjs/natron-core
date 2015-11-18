@@ -48,7 +48,7 @@ describe("task()", () => {
     t.push(task([[foo, "bar"]]));
     t.push(task([[[foo], "bar"]]));
     t.push(task(new Set()));
-    t.push(task(new Set("foo", bar)));
+    t.push(task(new Set(["foo", bar])));
 
     for (let i of t) {
       assert(i instanceof TaskSet);

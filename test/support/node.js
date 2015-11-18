@@ -15,6 +15,16 @@ function defer() {
   return d;
 }
 
+if (!Array.from) {
+  Array.from = function (iterable) {
+    let arr = [];
+    for (let i of iterable) {
+      arr.push(i);
+    }
+    return arr;
+  };
+}
+
 Object.assign(global, {
   assert,
   defer,
