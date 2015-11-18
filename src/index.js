@@ -1,14 +1,19 @@
-/*
- * natron-core
+/**
+ * @module natron-core
  */
-export {task, Task, FunctionTask, TaskSequence, TaskSet, LazyTask} from "./task";
+export {task} from "./helper/task";
+export {Task} from "./task";
+export {FunctionTask} from "./task/function";
+export {LazyTask} from "./task/lazy";
+export {TaskSequence} from "./task/sequence";
+export {TaskSet} from "./task/set";
 export {TaskContext} from "./context";
 
 export type Thing = Task|Function|string|iterable<Thing>;
 
 declare module "natron-core" {
 
-  declare function publish(type: string, e: any): void;
+  declare function publish(type: string, event: any): void;
 
   declare class EventAggregator {
     publish?: publish;

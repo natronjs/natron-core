@@ -2,7 +2,7 @@
  * natron-core test
  */
 import {EventEmitter} from "events";
-import {task} from "../";
+import {task, TaskContext} from "../";
 
 describe("TaskContext", () => {
 
@@ -47,5 +47,40 @@ describe("TaskContext", () => {
       },
     };
     return assert.becomes(t.runWithContext(c), "three");
+  });
+
+  it("Event on error context inspection", () => {
+
+    class MyTaskContext extends TaskContext {
+      eventAggregator = new EventEmitter();
+      pass = false;
+      constructor(init) {
+        super(init);
+        this.eventAggregator.on("error", (e) => {
+          if (!(e.context instanceof MyTaskContext)) {
+            return;
+          }
+          let {stack, args} = e.context;
+          if (stack.length !== 3) {
+            return;
+          }
+          if (args[0] !== "<.<a>>") {
+            return;
+          }
+          this.pass = true;
+        });
+      }
+    }
+
+    let context = new MyTaskContext({args: ["."]});
+    let t = task([a, [[a, () => { throw new Error() }, b]], b], {
+      options: {pipe: true},
+    });
+
+    return assert.isRejected(t.runWithContext(context)
+      .catch((err) => {
+        return context.pass && Promise.reject(err);
+      })
+    );
   });
 });

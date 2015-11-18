@@ -1,5 +1,10 @@
-/*
- * natron-core
+/**
+ * @module natron-core
  */
-export { task, Task, FunctionTask, TaskSequence, TaskSet, LazyTask } from "./task";
+export { task } from "./helper/task";
+export { Task } from "./task";
+export { FunctionTask } from "./task/function";
+export { LazyTask } from "./task/lazy";
+export { TaskSequence } from "./task/sequence";
+export { TaskSet } from "./task/set";
 export { TaskContext } from "./context";

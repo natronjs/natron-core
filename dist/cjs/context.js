@@ -11,59 +11,93 @@ Object.defineProperty(exports, "__esModule", {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var TaskContext = exports.TaskContext = (function () {
+  _createClass(TaskContext, null, [{
+    key: "create",
+    value: function create(context) {
+      if (context instanceof TaskContext) {
+        return context;
+      }
+      return new TaskContext(context);
+    }
+  }]);
+
   function TaskContext(init) {
     _classCallCheck(this, TaskContext);
 
-    init = init || {};
-    if (!init.stack) {
-      init.stack = [];
-    } else if (!(init.stack instanceof Array)) {
+    if (init && init.stack && init.stack instanceof Array) {
       throw new TypeError(init.stack + " is not an array");
     }
-    if (!init.args) {
-      init.args = [];
-    } else if (!(init.args instanceof Array)) {
+    if (init && init.args && !(init.args instanceof Array)) {
       throw new TypeError(init.args + " is not an array");
     }
-    _extends(this, init);
+    _extends(this, init, init && {
+      stack: init.stack || [],
+      args: init.args || []
+    });
   }
 
   _createClass(TaskContext, [{
-    key: "publish",
-    value: function publish(type, e) {
-      if (this.eventAggregator) {
-        var ea = this.eventAggregator;
-        if (ea instanceof Function) {
-          return ea(type, e);
-        }
-        var fn = ea.emit || ea.publish || ea.trigger;
-        if (fn) {
-          return fn.call(ea, type, e);
-        }
-      }
-    }
-  }, {
     key: "clone",
     value: function clone(init) {
-      var context = Object.create(TaskContext.prototype);
-      init = init || {};
-      if (init.stack === true) {
-        init.stack = this.stack.slice();
+      var cxproto = Object.getPrototypeOf(this);
+      var context = Object.create(cxproto);
+      var init_ = { parent: this };
+      if (init && init.stack === true) {
+        init_.stack = this.stack.slice();
       }
-      if (init.args === true) {
-        init.args = this.args.slice();
+      if (init && init.args === true) {
+        init_.args = this.args.slice();
       }
-      _extends(context, this, init);
+      _extends(context, this, init, init_);
       return context;
     }
   }, {
-    key: "task",
+    key: "publish",
+    value: function publish(type, event) {
+      if (this.eventAggregator) {
+        var ea = this.eventAggregator;
+        if (ea instanceof Function) {
+          return ea(type, event);
+        }
+        var fn = ea.emit || ea.publish || ea.trigger;
+        if (fn) {
+          return fn.call(ea, type, event);
+        }
+      }
+    }
+  }, {
+    key: "resolve",
+    value: function resolve(name) {
+      var task = undefined,
+          depth = this.stack.length - 1;
+      while (task = this.stack[depth--]) {
+        if (task.resolver) {
+          var rs = task.resolver;
+          if (rs instanceof Function) {
+            return rs(name, this);
+          }
+          var fn = rs.resolve;
+          if (fn) {
+            return fn.call(rs, name, this);
+          }
+          return;
+        }
+      }
+    }
+  }, {
+    key: "rootTask",
     get: function get() {
-      return this.stack[this.stack.length - 1];
+      return this.stack[0];
+    }
+  }, {
+    key: "currentTask",
+    get: function get() {
+      var depth = this.stack.length - 1;
+      return this.stack[depth];
     }
   }]);
 
   return TaskContext;
-})(); /*
-       * natron-core
+})(); /**
+       * @module natron-core
        */

@@ -1,9 +1,9 @@
-/*
- * natron-core
+/**
+ * @module natron-core
  */
-import type {Stream} from "stream";
 import type {ChildProcess} from "child_process";
 import type {EventEmitter} from "events";
+import type {Stream} from "stream";
 
 export function callAndPromise(fn: Function, self: object, ...args: any): Promise {
   if (this) {

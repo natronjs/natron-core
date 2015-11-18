@@ -37,8 +37,8 @@ function callAndPromise(fn, self) {
   } catch (err) {
     return Promise.reject(err);
   }
-} /*
-   * natron-core
+} /**
+   * @module natron-core
    */
 
 function streamToPromise(stream) {
