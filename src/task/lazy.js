@@ -12,7 +12,7 @@ export class LazyTask extends Task {
    */
   __ident__: string;
 
-  constructor(ident: string, meta?: object) {
+  constructor(ident: string, meta?: Object) {
     if (typeof ident !== "string") {
       throw new TypeError(`${ident} is not a valid identifier`);
     }

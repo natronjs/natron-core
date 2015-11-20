@@ -51,7 +51,8 @@ function task(thing, meta) {
 function __map__(task) {
   var map = __MAP__.get(task);
   if (!map) {
-    __MAP__.set(task, map = new Map());
+    map = new Map();
+    __MAP__.set(task, map);
   }
   return map;
 }

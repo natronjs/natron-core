@@ -1,0 +1,21 @@
+{
+  "extends": "eslint:recommended",
+  "parser": "babel-eslint",
+  "plugins": [
+    "flow-vars"
+  ],
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "brace-style": [2, "1tbs", {"allowSingleLine": true}],
+    "comma-dangle": [2, "always-multiline"],
+    "comma-spacing": [2, {"before": false, "after": true}],
+    "indent": [2, 2, {"SwitchCase": 1}],
+    "linebreak-style": [2, "unix" ],
+    "no-cond-assign": [2, "except-parens"],
+    "quotes": [2, "double", "avoid-escape"],
+    "semi": [2, "always"],
+    "strict": [2, "never"]
+  }
+}

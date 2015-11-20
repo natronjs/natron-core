@@ -1,6 +1,6 @@
 {
   "name": "natron-core",
-  "version": "0.2.0",
+  "version": "0.2.0-beta.2",
   "description": "Tasks with Promises",
   "keywords": [
     "natron",
@@ -14,8 +14,12 @@
     "type": "git",
     "url": "git+https://github.com/natronjs/natron-core.git"
   },
+  "engines": {
+    "node": ">=0.12"
+  },
   "devDependencies": {
     "babel-core": "^6.0.0",
+    "babel-eslint": "^4.1.0",
     "babel-plugin-transform-flow-strip-types": "^6.0.0",
     "babel-plugin-transform-object-assign": "^6.0.0",
     "babel-preset-es2015": "^6.0.0",

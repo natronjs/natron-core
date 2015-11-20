@@ -12,7 +12,7 @@ export class FunctionTask extends Task {
    */
   __fn__: Function;
 
-  constructor(fn: Function, meta?: object) {
+  constructor(fn: Function, meta?: Object) {
     if (!(fn instanceof Function)) {
       throw new TypeError(`${fn} is not a function`);
     }

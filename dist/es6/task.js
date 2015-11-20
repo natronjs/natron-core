@@ -17,9 +17,11 @@ export class Task {
   /**
    * @abstract
    */
+  /*eslint-disable no-unused-vars */
   runWithContext(c) {
     throw new Error("Not implemented");
   }
+  /*eslint-enable no-unused-vars */
 
   /**
    * @protected

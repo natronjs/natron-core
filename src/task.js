@@ -12,7 +12,7 @@ export class Task {
 
   resolver: resolve|Resolver;
 
-  constructor(meta?: object) {
+  constructor(meta?: Object) {
     Object.assign(this, meta, meta && meta.options && {
       options: Object.assign(this.options, meta.options),
     });
@@ -25,14 +25,16 @@ export class Task {
   /**
    * @abstract
    */
+  /*eslint-disable no-unused-vars */
   runWithContext(c: TaskContext): Promise {
     throw new Error("Not implemented");
   }
+  /*eslint-enable no-unused-vars */
 
   /**
    * @protected
    */
-  prepare(context: TaskContext): object {
+  prepare(context: TaskContext): Object {
     let event = {task: this, context};
     let start = () => {
       context.stack.push(this);

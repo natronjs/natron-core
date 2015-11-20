@@ -11,14 +11,14 @@ export class TaskContext {
   parent: TaskContext;
   eventAggregator: publish|EventAggregator;
 
-  static create(context?: TaskContext|object): TaskContext {
+  static create(context?: TaskContext|Object): TaskContext {
     if (context instanceof TaskContext) {
       return context;
     }
     return new TaskContext(context);
   }
 
-  constructor(init?: object) {
+  constructor(init?: Object) {
     if (init && init.stack && (init.stack instanceof Array)) {
       throw new TypeError(`${init.stack} is not an array`);
     }
@@ -40,7 +40,7 @@ export class TaskContext {
     return this.stack[depth];
   }
 
-  clone(init?: object): TaskContext {
+  clone(init?: Object): TaskContext {
     let cxproto = Object.getPrototypeOf(this);
     let context = Object.create(cxproto);
     let init_ = {parent: this};
@@ -69,7 +69,7 @@ export class TaskContext {
 
   resolve(name: string): Task {
     let task, depth = this.stack.length - 1;
-    while (task = this.stack[depth--]) {
+    while ((task = this.stack[depth--])) {
       if (task.resolver) {
         let rs = task.resolver;
         if (rs instanceof Function) {

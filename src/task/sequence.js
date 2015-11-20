@@ -4,6 +4,7 @@
 import {Task} from "../task";
 import {TaskContext} from "../context";
 import {task as ensureTask, __map__} from "../helper/task";
+import type {Thing} from "../";
 
 export class TaskSequence extends Task {
 
@@ -12,7 +13,7 @@ export class TaskSequence extends Task {
    */
   __sequence__: Array<Task> = [];
 
-  constructor(things: iterable<Thing>, meta?: object) {
+  constructor(things: Iterable<Thing>, meta?: Object) {
     if (things && !things[Symbol.iterator]) {
       throw new TypeError(`${things} is not iterable`);
     }
@@ -72,7 +73,7 @@ export class TaskSequence extends Task {
     this.__sequence__.push(task);
   }
 
-  addAll(things: iterable<Thing>): void {
+  addAll(things: Iterable<Thing>): void {
     for (let thing of things) {
       this.add(thing);
     }

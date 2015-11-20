@@ -5,7 +5,7 @@ import type {ChildProcess} from "child_process";
 import type {EventEmitter} from "events";
 import type {Stream} from "stream";
 
-export function callAndPromise(fn: Function, self: object, ...args: any): Promise {
+export function callAndPromise(fn: Function, self: Object, ...args: any): Promise {
   if (this) {
     [fn, self, args] = [this, fn, [self, ...args]];
   }
@@ -65,5 +65,5 @@ export function emitWrapper(ee: EventEmitter, fn: Function): Function {
   return (rr: Function, value: any) => {
     ee.emit = emit;
     return rr(value);
-  }
+  };
 }

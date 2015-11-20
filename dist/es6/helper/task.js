@@ -40,7 +40,8 @@ export function task(thing, meta) {
 export function __map__(task) {
   let map = __MAP__.get(task);
   if (!map) {
-    __MAP__.set(task, map = new Map());
+    map = new Map();
+    __MAP__.set(task, map);
   }
   return map;
 }

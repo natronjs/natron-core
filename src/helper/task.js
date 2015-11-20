@@ -6,10 +6,11 @@ import {FunctionTask} from "../task/function";
 import {LazyTask} from "../task/lazy";
 import {TaskSequence} from "../task/sequence";
 import {TaskSet} from "../task/set";
+import type {Thing} from "../";
 
 const __MAP__: WeakMap<Task, WeakMap<any, Task>> = new WeakMap();
 
-export function task(thing: Thing, meta?: object): Task {
+export function task(thing: Thing, meta?: Object): Task {
   if (thing instanceof Task) {
     return thing;
   }
@@ -40,7 +41,8 @@ export function task(thing: Thing, meta?: object): Task {
 export function __map__(task: Task): Map {
   let map = __MAP__.get(task);
   if (!map) {
-    __MAP__.set(task, map = new Map());
+    map = new Map();
+    __MAP__.set(task, map);
   }
   return map;
 }

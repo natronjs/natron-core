@@ -34,12 +34,14 @@ var Task = exports.Task = (function () {
     /**
      * @abstract
      */
+    /*eslint-disable no-unused-vars */
 
   }, {
     key: "runWithContext",
     value: function runWithContext(c) {
       throw new Error("Not implemented");
     }
+    /*eslint-enable no-unused-vars */
 
     /**
      * @protected
