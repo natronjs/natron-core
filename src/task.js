@@ -7,9 +7,7 @@ import type {Resolver, resolve} from "natron-core";
 export class Task {
 
   options = {};
-
   name: string;
-  description: string;
 
   resolver: Resolver|resolve;
 
