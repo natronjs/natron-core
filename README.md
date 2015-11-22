@@ -31,8 +31,6 @@ See the [documentation for natron-core][readme-url].
 
 ## Usage
 
-Compose tasks to run in sequence or in parallel.
-
 ```js
 import {task} from "natron-core";
 
@@ -40,80 +38,13 @@ function fn1()  { return 1; }
 function fn2()  { return 2; }
 function fnX(x) { return x; }
 
-// Sequence: Tasks will be run in sequence
-// fn1(3) -> fn2(3) -> fnX(3)
-task([fn1, fn2, fnX]).run(3)
-  .then((res) => {
-    // res = [1, 2, 3]
-  })
-  .catch((err) => {
-    // handle error
-  });
-
-// Set: Tasks will be run in parallel
-// fn1(3) || fn2(3) || fnX(3)
-task([[fn1, fn2, fnX]]).run(3)
-  .then((res) => {
-    // res = [1, 2, 3]
-  })
-  .catch((err) => {
-    // handle error
-  });
-```
-
-```js
-import {task} from "natron-core";
-
 // => fn1(3) -> (fn2(3) || fnX(3))
-task([fn1, [[fn2, fnX]]]).run(3)
+(task([fn1, [[fn2, fnX]]]).run(3)
   .then((res) => {
     // res = [1, [2, 3]]
   })
   .catch((err) => {
     // handle error
-  });
-```
-
-```js
-import {task} from "natron-core";
-
-function fn(v) { return `<${v}>`; }
-
-// => fn(".") -> fn("<.>") -> fn("<<.>>")
-task([fn, fn, fn], {
-  options: {pipe: true},
-}).run(".")
-  .then((res) => {
-    // res = "<<<.>>>"
   })
-  .catch((err) => {
-    // handle error
-  });
-```
-
-```js
-import {EventEmitter} from "events";
-import {task} from "natron-core";
-
-let ee = new EventEmitter();
-
-ee.on("start", (e) => {
-  // e = {task, context}
-});
-
-ee.on("finish", (e) => {
-  // e = {task, context, value}
-});
-
-ee.on("error", (e) => {
-  // e = {task, context, error}
-});
-
-task([/* ... */]).runWithContext({
-  args: [/* ... */],
-  eventAggregator: ee,
-})
-  .then((res) => {
-    // ...
-  });
+);
 ```
