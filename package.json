@@ -24,7 +24,8 @@
     "babel-plugin-transform-object-assign": "^6.0.0",
     "babel-preset-es2015": "^6.0.0",
     "babel-preset-stage-0": "^6.0.0",
-    "babel-register": "^6.0.0"
+    "babel-register": "^6.0.0",
+    "eslint-config-natron": "^0.1.0-beta"
   },
   "license": "MIT"
 }
