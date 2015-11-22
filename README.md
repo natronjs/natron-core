@@ -18,12 +18,16 @@
 [travis-img]: https://travis-ci.org/natronjs/natron-core.svg
 [travis-url]: https://travis-ci.org/natronjs/natron-core
 [readme-img]: https://img.shields.io/badge/read-me-orange.svg
-[readme-url]: https://natron.readme.io/
+[readme-url]: https://natron.readme.io/docs/module-natron-core
 
 [gitter-img]: https://badges.gitter.im/Join%20Chat.svg
 [gitter-url]: https://gitter.im/natronjs/natron
 
 This module is part of [Natron][natron-url] and contains the core functionality of the task runner.
+
+## Documentation
+
+See the [documentation for natron-core][readme-url].
 
 ## Usage
 
