@@ -2,7 +2,6 @@
   "private": true,
   "dependencies": {
     "eslint": "^1.9.0",
-    "eslint-plugin-flow-vars": "0.0.1",
     "natron": "^0.1.0",
     "natron-vinyl": "^0.1.0",
     "vinyl-tf-babel": "^0.1.0"

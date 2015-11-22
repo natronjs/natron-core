@@ -5,21 +5,21 @@ import type {ChildProcess} from "child_process";
 import type {EventEmitter} from "events";
 import type {Stream} from "stream";
 
-export function callAndPromise(fn: Function, self: Object, ...args: any): Promise {
-  if (this) {
-    [fn, self, args] = [this, fn, [self, ...args]];
-  }
-  try {
-    let result = fn.call(self, ...args);
-    if (result && result.emit) {
-      if (result.pipe) {
-        return streamToPromise(result);
-      }
-      if (result.stdio) {
-        return childProcessToPromise(result);
-      }
+function promisify(value: any): Promise {
+  if (value && value.emit) {
+    if (value.pipe) {
+      return streamToPromise(value);
     }
-    return Promise.resolve(result);
+    if (value.stdio) {
+      return childProcessToPromise(value);
+    }
+  }
+  return Promise.resolve(value);
+}
+
+export function callAndPromise(fn: Function, self: Object, ...args: any): Promise {
+  try {
+    return promisify(fn.call(self, ...args));
   } catch (err) {
     return Promise.reject(err);
   }

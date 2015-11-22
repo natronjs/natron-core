@@ -1,5 +1,6 @@
-/*
- * natron-core build
+/**
+ * @module natron-core
+ * build
  */
 import {resolve} from "path";
 import {task} from "natron";
@@ -8,7 +9,7 @@ import {transform} from "vinyl-tf-babel";
 
 const PKG_DIR = resolve(__dirname, "..");
 
-function builder(target: string, options?: object) {
+function builder(target: string, options) {
   return () => (src(resolve(PKG_DIR, "src", "**/*.js"))
     .pipe(transform(options))
     .pipe(dest(resolve(PKG_DIR, "dist", target)))

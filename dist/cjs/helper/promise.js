@@ -10,36 +10,31 @@ exports.emitWrapper = emitWrapper;
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
-function callAndPromise(fn, self) {
-  for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-    args[_key - 2] = arguments[_key];
-  }
-
-  if (this) {
-    var _ref = [this, fn, [self].concat(_toConsumableArray(args))];
-    fn = _ref[0];
-    self = _ref[1];
-    args = _ref[2];
-  }
-  try {
-    var _fn;
-
-    var result = (_fn = fn).call.apply(_fn, [self].concat(_toConsumableArray(args)));
-    if (result && result.emit) {
-      if (result.pipe) {
-        return streamToPromise(result);
-      }
-      if (result.stdio) {
-        return childProcessToPromise(result);
-      }
+function promisify(value) {
+  if (value && value.emit) {
+    if (value.pipe) {
+      return streamToPromise(value);
     }
-    return Promise.resolve(result);
-  } catch (err) {
-    return Promise.reject(err);
+    if (value.stdio) {
+      return childProcessToPromise(value);
+    }
   }
+  return Promise.resolve(value);
 } /**
    * @module natron-core
    */
+
+function callAndPromise(fn, self) {
+  try {
+    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      args[_key - 2] = arguments[_key];
+    }
+
+    return promisify(fn.call.apply(fn, [self].concat(_toConsumableArray(args))));
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
 
 function streamToPromise(stream) {
   return new Promise(function (resolve, reject) {

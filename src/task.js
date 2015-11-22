@@ -2,6 +2,7 @@
  * @module natron-core
  */
 import type {TaskContext} from "./context";
+import type {resolve, Resolver} from "./";
 
 export class Task {
 

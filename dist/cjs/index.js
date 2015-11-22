@@ -22,6 +22,15 @@ Object.defineProperty(exports, "Task", {
   }
 });
 
+var _context = require("./context");
+
+Object.defineProperty(exports, "TaskContext", {
+  enumerable: true,
+  get: function get() {
+    return _context.TaskContext;
+  }
+});
+
 var _function = require("./task/function");
 
 Object.defineProperty(exports, "FunctionTask", {
@@ -55,14 +64,5 @@ Object.defineProperty(exports, "TaskSet", {
   enumerable: true,
   get: function get() {
     return _set.TaskSet;
-  }
-});
-
-var _context = require("./context");
-
-Object.defineProperty(exports, "TaskContext", {
-  enumerable: true,
-  get: function get() {
-    return _context.TaskContext;
   }
 });

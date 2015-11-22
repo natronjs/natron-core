@@ -1,4 +1,6 @@
-
+/**
+ * @module natron-core
+ */
 
 export class Task {
 
@@ -41,6 +43,4 @@ export class Task {
     };
     return { start, finish, event };
   }
-} /**
-   * @module natron-core
-   */
+}

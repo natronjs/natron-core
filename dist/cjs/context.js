@@ -10,6 +10,10 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * @module natron-core
+ */
+
 var TaskContext = exports.TaskContext = (function () {
   _createClass(TaskContext, null, [{
     key: "create",
@@ -98,6 +102,4 @@ var TaskContext = exports.TaskContext = (function () {
   }]);
 
   return TaskContext;
-})(); /**
-       * @module natron-core
-       */
+})();

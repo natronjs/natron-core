@@ -2,6 +2,7 @@
  * @module natron-core
  */
 import type {Task} from "./task";
+import type {publish, EventAggregator} from "./";
 
 export class TaskContext {
 

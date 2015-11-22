@@ -1,26 +1,26 @@
 
 
-export function callAndPromise(fn, self, ...args) {
-  if (this) {
-    [fn, self, args] = [this, fn, [self, ...args]];
-  }
-  try {
-    let result = fn.call(self, ...args);
-    if (result && result.emit) {
-      if (result.pipe) {
-        return streamToPromise(result);
-      }
-      if (result.stdio) {
-        return childProcessToPromise(result);
-      }
+function promisify(value) {
+  if (value && value.emit) {
+    if (value.pipe) {
+      return streamToPromise(value);
     }
-    return Promise.resolve(result);
-  } catch (err) {
-    return Promise.reject(err);
+    if (value.stdio) {
+      return childProcessToPromise(value);
+    }
   }
+  return Promise.resolve(value);
 } /**
    * @module natron-core
    */
+
+export function callAndPromise(fn, self, ...args) {
+  try {
+    return promisify(fn.call(self, ...args));
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
 
 export function streamToPromise(stream) {
   return new Promise((resolve, reject) => {

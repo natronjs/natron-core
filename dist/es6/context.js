@@ -1,4 +1,6 @@
-
+/**
+ * @module natron-core
+ */
 
 export class TaskContext {
 
@@ -75,6 +77,4 @@ export class TaskContext {
       }
     }
   }
-} /**
-   * @module natron-core
-   */
+}

@@ -10,6 +10,10 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * @module natron-core
+ */
+
 var Task = exports.Task = (function () {
   function Task(meta) {
     _classCallCheck(this, Task);
@@ -69,6 +73,4 @@ var Task = exports.Task = (function () {
   }]);
 
   return Task;
-})(); /**
-       * @module natron-core
-       */
+})();
