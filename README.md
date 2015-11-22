@@ -34,14 +34,14 @@ See the [documentation for natron-core][readme-url].
 ```js
 import {task} from "natron-core";
 
-function fn1()  { return 1; }
-function fn2()  { return 2; }
-function fnX(x) { return x; }
+function fn1(x) { return x * 1; }
+function fn2(x) { return x * 2; }
+function fn3(x) { return x * 3; }
 
-// => fn1(3) -> (fn2(3) || fnX(3))
-(task([fn1, [[fn2, fnX]]]).run(3)
+// => fn1(2) -> (fn2(2) || fn3(2))
+(task([fn1, [[fn2, fn3]]]).run(2)
   .then((res) => {
-    // res = [1, [2, 3]]
+    // res = [2, [4, 6]]
   })
   .catch((err) => {
     // handle error
