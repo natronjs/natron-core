@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.promisify = promisify;
 exports.defer = defer;
 exports.callAndPromise = callAndPromise;
 

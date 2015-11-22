@@ -1,6 +1,6 @@
 
 
-function promisify(value) {
+export function promisify(value) {
   if (value && value.on) {
     if (value.pipe) {
       return promisifyStream(value);

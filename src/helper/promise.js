@@ -5,7 +5,7 @@ import type {Stream} from "stream";
 import type {ChildProcess} from "child_process";
 import type {DeferredObject} from "natron-core";
 
-function promisify(value: any): Promise {
+export function promisify(value: any): Promise {
   if (value && value.on) {
     if (value.pipe) {
       return promisifyStream(value);
