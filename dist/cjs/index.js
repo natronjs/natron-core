@@ -13,6 +13,21 @@ Object.defineProperty(exports, "task", {
   }
 });
 
+var _promise = require("./helper/promise");
+
+Object.defineProperty(exports, "promisify", {
+  enumerable: true,
+  get: function get() {
+    return _promise.promisify;
+  }
+});
+Object.defineProperty(exports, "defer", {
+  enumerable: true,
+  get: function get() {
+    return _promise.defer;
+  }
+});
+
 var _task2 = require("./task");
 
 Object.defineProperty(exports, "Task", {

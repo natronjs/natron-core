@@ -5,27 +5,46 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.defer = defer;
 exports.callAndPromise = callAndPromise;
-exports.applyAndPromise = applyAndPromise;
-exports.streamToPromise = streamToPromise;
-exports.childProcessToPromise = childProcessToPromise;
-exports.emitWrapper = emitWrapper;
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
-/**
- * @module natron-core
- */
-
 function promisify(value) {
-  if (value && value.emit) {
+  if (value && value.on) {
     if (value.pipe) {
-      return streamToPromise(value);
+      return promisifyStream(value);
     }
     if (value.stdio) {
-      return childProcessToPromise(value);
+      return promisifyChildProcess(value);
     }
   }
+  // else if (value && value.subscribe) {
+  //   return promisifyObservable(value);
+  // }
   return Promise.resolve(value);
+} /**
+   * @module natron-core
+   */
+
+function promisifyStream(stream) {
+  return new Promise(function (resolve, reject) {
+    stream.on(stream._write ? "finish" : "end", function () {
+      return resolve({ stream: stream });
+    });
+    stream.on("error", function (err) {
+      return reject(err);
+    });
+  });
+}
+
+function promisifyChildProcess(child) {
+  return new Promise(function (resolve, reject) {
+    child.on("exit", function (code, signal) {
+      return resolve({ child: child, code: code, signal: signal });
+    });
+    child.on("error", function (err) {
+      return reject(err);
+    });
+  });
 }
 
 function defer() {
@@ -47,63 +66,4 @@ function callAndPromise(fn, self) {
   } catch (err) {
     return Promise.reject(err);
   }
-}
-
-function applyAndPromise(fn, self, args) {
-  try {
-    return promisify(fn.apply(self, args));
-  } catch (err) {
-    return Promise.reject(err);
-  }
-}
-
-function streamToPromise(stream) {
-  return new Promise(function (resolve, reject) {
-    var reset = emitWrapper(stream, function (type) {
-      switch (type) {
-        case "end":
-        case "finish":
-          {
-            return reset(resolve, { stream: stream });
-          }
-        case "error":
-          {
-            return reset(reject, arguments[1]);
-          }
-      }
-    });
-  });
-}
-
-function childProcessToPromise(child) {
-  return new Promise(function (resolve, reject) {
-    var reset = emitWrapper(child, function (type) {
-      switch (type) {
-        case "exit":
-          {
-            return reset(resolve, { child: child });
-          }
-        case "error":
-          {
-            return reset(reject, arguments[1]);
-          }
-      }
-    });
-  });
-}
-
-function emitWrapper(ee, fn) {
-  var emit = ee.emit;
-  ee.emit = function (type) {
-    for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-      args[_key2 - 1] = arguments[_key2];
-    }
-
-    fn.apply(undefined, [type].concat(_toConsumableArray(args)));
-    return emit.call.apply(emit, [ee, type].concat(_toConsumableArray(args)));
-  };
-  return function (rr, value) {
-    ee.emit = emit;
-    return rr(value);
-  };
 }

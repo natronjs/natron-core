@@ -2,6 +2,7 @@
  * @module natron-core
  */
 export { task } from "./helper/task";
+export { promisify, defer } from "./helper/promise";
 export { Task } from "./task";
 export { TaskContext } from "./context";
 export { FunctionTask } from "./task/function";

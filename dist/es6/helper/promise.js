@@ -1,17 +1,34 @@
-/**
- * @module natron-core
- */
+
 
 function promisify(value) {
-  if (value && value.emit) {
+  if (value && value.on) {
     if (value.pipe) {
-      return streamToPromise(value);
+      return promisifyStream(value);
     }
     if (value.stdio) {
-      return childProcessToPromise(value);
+      return promisifyChildProcess(value);
     }
   }
+  // else if (value && value.subscribe) {
+  //   return promisifyObservable(value);
+  // }
   return Promise.resolve(value);
+} /**
+   * @module natron-core
+   */
+
+function promisifyStream(stream) {
+  return new Promise((resolve, reject) => {
+    stream.on(stream._write ? "finish" : "end", () => resolve({ stream }));
+    stream.on("error", err => reject(err));
+  });
+}
+
+function promisifyChildProcess(child) {
+  return new Promise((resolve, reject) => {
+    child.on("exit", (code, signal) => resolve({ child, code, signal }));
+    child.on("error", err => reject(err));
+  });
 }
 
 export function defer() {
@@ -29,59 +46,4 @@ export function callAndPromise(fn, self, ...args) {
   } catch (err) {
     return Promise.reject(err);
   }
-}
-
-export function applyAndPromise(fn, self, args) {
-  try {
-    return promisify(fn.apply(self, args));
-  } catch (err) {
-    return Promise.reject(err);
-  }
-}
-
-export function streamToPromise(stream) {
-  return new Promise((resolve, reject) => {
-    let reset = emitWrapper(stream, (type, ...args) => {
-      switch (type) {
-        case "end":
-        case "finish":
-          {
-            return reset(resolve, { stream });
-          }
-        case "error":
-          {
-            return reset(reject, args[0]);
-          }
-      }
-    });
-  });
-}
-
-export function childProcessToPromise(child) {
-  return new Promise((resolve, reject) => {
-    let reset = emitWrapper(child, (type, ...args) => {
-      switch (type) {
-        case "exit":
-          {
-            return reset(resolve, { child });
-          }
-        case "error":
-          {
-            return reset(reject, args[0]);
-          }
-      }
-    });
-  });
-}
-
-export function emitWrapper(ee, fn) {
-  let emit = ee.emit;
-  ee.emit = (type, ...args) => {
-    fn(type, ...args);
-    return emit.call(ee, type, ...args);
-  };
-  return (rr, value) => {
-    ee.emit = emit;
-    return rr(value);
-  };
 }
