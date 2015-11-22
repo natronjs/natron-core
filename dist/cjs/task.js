@@ -38,14 +38,12 @@ var Task = exports.Task = (function () {
     /**
      * @abstract
      */
-    /*eslint-disable no-unused-vars */
 
   }, {
     key: "runWithContext",
-    value: function runWithContext(c) {
+    value: function runWithContext() {
       throw new Error("Not implemented");
     }
-    /*eslint-enable no-unused-vars */
 
     /**
      * @protected
@@ -56,19 +54,19 @@ var Task = exports.Task = (function () {
     value: function prepare(context) {
       var _this = this;
 
-      var event = { task: this, context: context };
+      var e = { task: this, context: context };
       var start = function start() {
         context.stack.push(_this);
-        context.publish("start", event);
-        return Promise.resolve();
+        context.publish("start", e);
+        return Promise.resolve(e);
       };
       var finish = function finish(value) {
-        event.value = value;
-        context.publish("finish", event);
+        e.value = value;
+        context.publish("finish", e);
         context.stack.pop();
         return value;
       };
-      return { start: start, finish: finish, event: event };
+      return { start: start, finish: finish, e: e };
     }
   }]);
 

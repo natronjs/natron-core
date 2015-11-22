@@ -57,15 +57,15 @@ var TaskContext = exports.TaskContext = (function () {
     }
   }, {
     key: "publish",
-    value: function publish(type, event) {
+    value: function publish(type, e) {
       if (this.eventAggregator) {
         var ea = this.eventAggregator;
         if (ea instanceof Function) {
-          return ea(type, event);
+          return ea(type, e);
         }
         var fn = ea.emit || ea.publish || ea.trigger;
         if (fn) {
-          return fn.call(ea, type, event);
+          return fn.call(ea, type, e);
         }
       }
     }

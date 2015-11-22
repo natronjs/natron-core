@@ -3,12 +3,18 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.defer = defer;
 exports.callAndPromise = callAndPromise;
+exports.applyAndPromise = applyAndPromise;
 exports.streamToPromise = streamToPromise;
 exports.childProcessToPromise = childProcessToPromise;
 exports.emitWrapper = emitWrapper;
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+/**
+ * @module natron-core
+ */
 
 function promisify(value) {
   if (value && value.emit) {
@@ -20,9 +26,16 @@ function promisify(value) {
     }
   }
   return Promise.resolve(value);
-} /**
-   * @module natron-core
-   */
+}
+
+function defer() {
+  var d = undefined,
+      promise = new Promise(function (resolve, reject) {
+    d = { promise: null, resolve: resolve, reject: reject };
+  });
+  d.promise = promise;
+  return d;
+}
 
 function callAndPromise(fn, self) {
   try {
@@ -31,6 +44,14 @@ function callAndPromise(fn, self) {
     }
 
     return promisify(fn.call.apply(fn, [self].concat(_toConsumableArray(args))));
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+function applyAndPromise(fn, self, args) {
+  try {
+    return promisify(fn.apply(self, args));
   } catch (err) {
     return Promise.reject(err);
   }

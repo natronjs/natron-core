@@ -47,15 +47,15 @@ export class TaskContext {
     return context;
   }
 
-  publish(type, event) {
+  publish(type, e) {
     if (this.eventAggregator) {
       let ea = this.eventAggregator;
       if (ea instanceof Function) {
-        return ea(type, event);
+        return ea(type, e);
       }
       let fn = ea.emit || ea.publish || ea.trigger;
       if (fn) {
-        return fn.call(ea, type, event);
+        return fn.call(ea, type, e);
       }
     }
   }

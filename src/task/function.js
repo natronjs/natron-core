@@ -25,7 +25,7 @@ export class FunctionTask extends Task {
    */
   runWithContext(c: TaskContext): Promise {
     let context = TaskContext.create(c);
-    let {start, finish, event} = this.prepare(context);
+    let {start, finish, e} = this.prepare(context);
     return (start()
       .then(() => {
         let {args} = context;
@@ -33,8 +33,8 @@ export class FunctionTask extends Task {
         return callAndPromise(this.__fn__, self, ...args);
       })
       .catch((err) => {
-        event.error = err;
-        context.publish("error", event);
+        e.error = err;
+        context.publish("error", e);
         return Promise.reject(err);
       })
       .then(finish)

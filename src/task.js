@@ -2,7 +2,7 @@
  * @module natron-core
  */
 import type {TaskContext} from "./context";
-import type {resolve, Resolver} from "./";
+import type {Resolver, resolve} from "natron-core";
 
 export class Task {
 
@@ -11,7 +11,7 @@ export class Task {
   name: string;
   description: string;
 
-  resolver: resolve|Resolver;
+  resolver: Resolver|resolve;
 
   constructor(meta?: Object) {
     Object.assign(this, meta, meta && meta.options && {
@@ -26,28 +26,26 @@ export class Task {
   /**
    * @abstract
    */
-  /*eslint-disable no-unused-vars */
-  runWithContext(c: TaskContext): Promise {
+  runWithContext(): Promise {
     throw new Error("Not implemented");
   }
-  /*eslint-enable no-unused-vars */
 
   /**
    * @protected
    */
   prepare(context: TaskContext): Object {
-    let event = {task: this, context};
+    let e = {task: this, context};
     let start = () => {
       context.stack.push(this);
-      context.publish("start", event);
-      return Promise.resolve();
+      context.publish("start", e);
+      return Promise.resolve(e);
     };
     let finish = (value) => {
-      event.value = value;
-      context.publish("finish", event);
+      e.value = value;
+      context.publish("finish", e);
       context.stack.pop();
       return value;
     };
-    return {start, finish, event};
+    return {start, finish, e};
   }
 }

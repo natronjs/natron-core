@@ -1,4 +1,6 @@
-
+/**
+ * @module natron-core
+ */
 
 function promisify(value) {
   if (value && value.emit) {
@@ -10,13 +12,28 @@ function promisify(value) {
     }
   }
   return Promise.resolve(value);
-} /**
-   * @module natron-core
-   */
+}
+
+export function defer() {
+  let d,
+      promise = new Promise((resolve, reject) => {
+    d = { promise: null, resolve, reject };
+  });
+  d.promise = promise;
+  return d;
+}
 
 export function callAndPromise(fn, self, ...args) {
   try {
     return promisify(fn.call(self, ...args));
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+export function applyAndPromise(fn, self, args) {
+  try {
+    return promisify(fn.apply(self, args));
   } catch (err) {
     return Promise.reject(err);
   }

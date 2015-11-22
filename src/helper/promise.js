@@ -4,6 +4,7 @@
 import type {ChildProcess} from "child_process";
 import type {EventEmitter} from "events";
 import type {Stream} from "stream";
+import type {DeferredObject} from "natron-core";
 
 function promisify(value: any): Promise {
   if (value && value.emit) {
@@ -17,9 +18,25 @@ function promisify(value: any): Promise {
   return Promise.resolve(value);
 }
 
+export function defer(): DeferredObject {
+  let d, promise = new Promise((resolve, reject) => {
+    d = {promise: null, resolve, reject};
+  });
+  d.promise = promise;
+  return d;
+}
+
 export function callAndPromise(fn: Function, self: Object, ...args: any): Promise {
   try {
     return promisify(fn.call(self, ...args));
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+export function applyAndPromise(fn: Function, self: Object, args: Array<any>): Promise {
+  try {
+    return promisify(fn.apply(self, args));
   } catch (err) {
     return Promise.reject(err);
   }

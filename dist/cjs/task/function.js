@@ -60,7 +60,7 @@ var FunctionTask = exports.FunctionTask = (function (_Task) {
 
       var start = _prepare.start;
       var finish = _prepare.finish;
-      var event = _prepare.event;
+      var e = _prepare.e;
 
       return start().then(function () {
         var args = context.args;
@@ -68,8 +68,8 @@ var FunctionTask = exports.FunctionTask = (function (_Task) {
         var self = _this2.options.bind || context;
         return _promise.callAndPromise.apply(undefined, [_this2.__fn__, self].concat(_toConsumableArray(args)));
       }).catch(function (err) {
-        event.error = err;
-        context.publish("error", event);
+        e.error = err;
+        context.publish("error", e);
         return Promise.reject(err);
       }).then(finish);
     }

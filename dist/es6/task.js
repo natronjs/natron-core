@@ -19,28 +19,26 @@ export class Task {
   /**
    * @abstract
    */
-  /*eslint-disable no-unused-vars */
-  runWithContext(c) {
+  runWithContext() {
     throw new Error("Not implemented");
   }
-  /*eslint-enable no-unused-vars */
 
   /**
    * @protected
    */
   prepare(context) {
-    let event = { task: this, context };
+    let e = { task: this, context };
     let start = () => {
       context.stack.push(this);
-      context.publish("start", event);
-      return Promise.resolve();
+      context.publish("start", e);
+      return Promise.resolve(e);
     };
     let finish = value => {
-      event.value = value;
-      context.publish("finish", event);
+      e.value = value;
+      context.publish("finish", e);
       context.stack.pop();
       return value;
     };
-    return { start, finish, event };
+    return { start, finish, e };
   }
 }

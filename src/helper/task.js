@@ -6,7 +6,7 @@ import {FunctionTask} from "../task/function";
 import {LazyTask} from "../task/lazy";
 import {TaskSequence} from "../task/sequence";
 import {TaskSet} from "../task/set";
-import type {Thing} from "../";
+import type {Thing} from "natron-core";
 
 const __MAP__: WeakMap<Task, WeakMap<any, Task>> = new WeakMap();
 

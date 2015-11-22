@@ -2,7 +2,7 @@
  * @module natron-core
  */
 import type {Task} from "./task";
-import type {publish, EventAggregator} from "./";
+import type {Thing, EventAggregator, publish} from "natron-core";
 
 export class TaskContext {
 
@@ -10,7 +10,7 @@ export class TaskContext {
   args: Array<any>;
 
   parent: TaskContext;
-  eventAggregator: publish|EventAggregator;
+  eventAggregator: EventAggregator|publish;
 
   static create(context?: TaskContext|Object): TaskContext {
     if (context instanceof TaskContext) {
@@ -55,20 +55,20 @@ export class TaskContext {
     return context;
   }
 
-  publish(type: string, event: any): void {
+  publish(type: string, e: any): void {
     if (this.eventAggregator) {
       let ea = this.eventAggregator;
       if (ea instanceof Function) {
-        return ea(type, event);
+        return ea(type, e);
       }
       let fn = ea.emit || ea.publish || ea.trigger;
       if (fn) {
-        return fn.call(ea, type, event);
+        return fn.call(ea, type, e);
       }
     }
   }
 
-  resolve(name: string): Task {
+  resolve(name: string): Thing {
     let task, depth = this.stack.length - 1;
     while ((task = this.stack[depth--])) {
       if (task.resolver) {

@@ -4,7 +4,7 @@
 import {Task} from "../task";
 import {TaskContext} from "../context";
 import {task as ensureTask, __map__} from "../helper/task";
-import type {Thing} from "../";
+import type {Thing} from "natron-core";
 
 export class TaskSequence extends Task {
 
