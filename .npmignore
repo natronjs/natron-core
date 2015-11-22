@@ -4,7 +4,6 @@
 
 # --------------------------------------
 /build
-/examples
 /test
 /.editorconfig
 /.eslintrc
