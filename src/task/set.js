@@ -4,13 +4,10 @@
 import {Task} from "../task";
 import {TaskContext} from "../context";
 import {task as ensureTask, __map__} from "../helper/task";
-import type {Thing} from "natron-core";
+import type {Thing} from "../task";
 
 export class TaskSet extends Task {
 
-  /**
-   * @private
-   */
   __set__: Set<Task> = new Set();
 
   constructor(things: Iterable<Thing>, meta?: Object) {
@@ -21,9 +18,6 @@ export class TaskSet extends Task {
     things && this.addAll(things);
   }
 
-  /**
-   * @override
-   */
   runWithContext(c: TaskContext): Promise {
     let context = TaskContext.create(c);
     let {start, finish} = this.prepare(context);

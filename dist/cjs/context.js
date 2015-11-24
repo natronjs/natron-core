@@ -10,10 +10,6 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/**
- * @module natron-core
- */
-
 var TaskContext = exports.TaskContext = (function () {
   _createClass(TaskContext, null, [{
     key: "create",
@@ -28,13 +24,14 @@ var TaskContext = exports.TaskContext = (function () {
   function TaskContext(init) {
     _classCallCheck(this, TaskContext);
 
-    if (init && init.stack && init.stack instanceof Array) {
+    init = init || {};
+    if (init.stack && !(init.stack instanceof Array)) {
       throw new TypeError(init.stack + " is not an array");
     }
-    if (init && init.args && !(init.args instanceof Array)) {
+    if (init.args && !(init.args instanceof Array)) {
       throw new TypeError(init.args + " is not an array");
     }
-    _extends(this, init, init && {
+    _extends(this, init, {
       stack: init.stack || [],
       args: init.args || []
     });
@@ -102,4 +99,6 @@ var TaskContext = exports.TaskContext = (function () {
   }]);
 
   return TaskContext;
-})();
+})(); /**
+       * @module natron-core
+       */

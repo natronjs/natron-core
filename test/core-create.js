@@ -1,7 +1,8 @@
-/*
- * natron-core test
+/**
+ * @module natron-core
+ * test
  */
-import {task, Task, FunctionTask, TaskSequence, TaskSet, LazyTask} from "../";
+import {task, FunctionTask, TaskSequence, TaskSet, LazyTask} from "../";
 
 describe("task()", () => {
 

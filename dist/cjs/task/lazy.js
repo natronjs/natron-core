@@ -37,14 +37,6 @@ var LazyTask = exports.LazyTask = (function (_Task) {
     return _this;
   }
 
-  /**
-   * @override
-   */
-
-  /**
-   * @private
-   */
-
   _createClass(LazyTask, [{
     key: "runWithContext",
     value: function runWithContext(c) {

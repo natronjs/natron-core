@@ -7,7 +7,7 @@ export class Task {
   constructor(meta) {
     this.options = {};
 
-    Object.assign(this, meta, meta && meta.options && {
+    Object.assign(this, meta, meta && {
       options: Object.assign(this.options, meta.options)
     });
   }
@@ -16,16 +16,10 @@ export class Task {
     return this.runWithContext({ args });
   }
 
-  /**
-   * @abstract
-   */
-  runWithContext() {
+  runWithContext(c) {
     throw new Error("Not implemented");
   }
 
-  /**
-   * @protected
-   */
   prepare(context) {
     let e = { task: this, context };
     let start = () => {

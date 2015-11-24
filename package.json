@@ -1,6 +1,6 @@
 {
   "name": "natron-core",
-  "version": "0.2.0-beta.3",
+  "version": "0.2.0-beta.4",
   "description": "Tasks with Promises",
   "keywords": [
     "natron",
@@ -14,6 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/natronjs/natron-core.git"
   },
+  "main": "dist/cjs",
   "engines": {
     "node": ">=0.12"
   },

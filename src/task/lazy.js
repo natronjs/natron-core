@@ -7,9 +7,6 @@ import {task as ensureTask} from "../helper/task";
 
 export class LazyTask extends Task {
 
-  /**
-   * @private
-   */
   __ident__: string;
 
   constructor(ident: string, meta?: Object) {
@@ -20,9 +17,6 @@ export class LazyTask extends Task {
     this.__ident__ = ident;
   }
 
-  /**
-   * @override
-   */
   runWithContext(c: TaskContext): Promise {
     let context = TaskContext.create(c);
     let thing = context.resolve(this.__ident__);

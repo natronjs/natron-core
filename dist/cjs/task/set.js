@@ -39,14 +39,6 @@ var TaskSet = exports.TaskSet = (function (_Task) {
     return _this;
   }
 
-  /**
-   * @override
-   */
-
-  /**
-   * @private
-   */
-
   _createClass(TaskSet, [{
     key: "runWithContext",
     value: function runWithContext(c) {

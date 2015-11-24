@@ -1,6 +1,4 @@
-/**
- * @module natron-core
- */
+
 
 export class TaskContext {
 
@@ -12,13 +10,14 @@ export class TaskContext {
   }
 
   constructor(init) {
-    if (init && init.stack && init.stack instanceof Array) {
+    init = init || {};
+    if (init.stack && !(init.stack instanceof Array)) {
       throw new TypeError(`${ init.stack } is not an array`);
     }
-    if (init && init.args && !(init.args instanceof Array)) {
+    if (init.args && !(init.args instanceof Array)) {
       throw new TypeError(`${ init.args } is not an array`);
     }
-    Object.assign(this, init, init && {
+    Object.assign(this, init, {
       stack: init.stack || [],
       args: init.args || []
     });
@@ -77,4 +76,6 @@ export class TaskContext {
       }
     }
   }
-}
+} /**
+   * @module natron-core
+   */

@@ -2,7 +2,13 @@
  * @module natron-core
  */
 import type {TaskContext} from "./context";
-import type {Resolver, resolve} from "natron-core";
+
+export type Thing = Task|Function|string|Iterable<Thing>;
+
+type Resolver = {
+  resolve: resolve;
+};
+type resolve = (name: string, context?: TaskContext) => Thing;
 
 export class Task {
 
@@ -12,7 +18,7 @@ export class Task {
   resolver: Resolver|resolve;
 
   constructor(meta?: Object) {
-    Object.assign(this, meta, meta && meta.options && {
+    Object.assign(this, meta, meta && {
       options: Object.assign(this.options, meta.options),
     });
   }
@@ -21,16 +27,10 @@ export class Task {
     return this.runWithContext({args});
   }
 
-  /**
-   * @abstract
-   */
-  runWithContext(): Promise {
+  runWithContext(c: TaskContext): Promise {
     throw new Error("Not implemented");
   }
 
-  /**
-   * @protected
-   */
   prepare(context: TaskContext): Object {
     let e = {task: this, context};
     let start = () => {

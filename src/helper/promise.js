@@ -3,7 +3,12 @@
  */
 import type {Stream} from "stream";
 import type {ChildProcess} from "child_process";
-import type {DeferredObject} from "natron-core";
+
+type DeferredObject = {
+  promise: Promise;
+  resolve: Function;
+  reject: Function;
+};
 
 export function promisify(value: any): Promise {
   if (value && value.on) {
@@ -14,15 +19,12 @@ export function promisify(value: any): Promise {
       return promisifyChildProcess(value);
     }
   }
-  // else if (value && value.subscribe) {
-  //   return promisifyObservable(value);
-  // }
   return Promise.resolve(value);
 }
 
 function promisifyStream(stream: Stream): Promise {
   return new Promise((resolve, reject) => {
-    stream.on(stream._write ? "finish": "end", () => resolve({stream}));
+    stream.on(stream._write ? "finish" : "end", () => resolve({stream}));
     stream.on("error", (err) => reject(err));
   });
 }

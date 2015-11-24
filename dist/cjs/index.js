@@ -12,6 +12,12 @@ Object.defineProperty(exports, "task", {
     return _task.task;
   }
 });
+Object.defineProperty(exports, "isTask", {
+  enumerable: true,
+  get: function get() {
+    return _task.isTask;
+  }
+});
 
 var _promise = require("./helper/promise");
 

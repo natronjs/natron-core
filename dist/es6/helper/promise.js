@@ -9,9 +9,6 @@ export function promisify(value) {
       return promisifyChildProcess(value);
     }
   }
-  // else if (value && value.subscribe) {
-  //   return promisifyObservable(value);
-  // }
   return Promise.resolve(value);
 } /**
    * @module natron-core

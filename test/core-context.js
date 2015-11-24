@@ -1,5 +1,6 @@
-/*
- * natron-core test
+/**
+ * @module natron-core
+ * test
  */
 import {EventEmitter} from "events";
 import {task, TaskContext} from "../";
@@ -73,7 +74,7 @@ describe("TaskContext", () => {
     }
 
     let context = new MyTaskContext({args: ["."]});
-    let t = task([a, [[a, () => { throw new Error() }, b]], b], {
+    let t = task([a, [[a, () => { throw new Error(); }, b]], b], {
       options: {pipe: true},
     });
 

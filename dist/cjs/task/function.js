@@ -41,14 +41,6 @@ var FunctionTask = exports.FunctionTask = (function (_Task) {
     return _this;
   }
 
-  /**
-   * @override
-   */
-
-  /**
-   * @private
-   */
-
   _createClass(FunctionTask, [{
     key: "runWithContext",
     value: function runWithContext(c) {
@@ -63,10 +55,8 @@ var FunctionTask = exports.FunctionTask = (function (_Task) {
       var e = _prepare.e;
 
       return start().then(function () {
-        var args = context.args;
-
         var self = _this2.options.bind || context;
-        return _promise.callAndPromise.apply(undefined, [_this2.__fn__, self].concat(_toConsumableArray(args)));
+        return _promise.callAndPromise.apply(undefined, [_this2.__fn__, self].concat(_toConsumableArray(context.args)));
       }).catch(function (err) {
         e.error = err;
         context.publish("error", e);

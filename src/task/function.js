@@ -7,9 +7,6 @@ import {callAndPromise} from "../helper/promise";
 
 export class FunctionTask extends Task {
 
-  /**
-   * @private
-   */
   __fn__: Function;
 
   constructor(fn: Function, meta?: Object) {
@@ -20,17 +17,13 @@ export class FunctionTask extends Task {
     this.__fn__ = fn;
   }
 
-  /**
-   * @override
-   */
   runWithContext(c: TaskContext): Promise {
     let context = TaskContext.create(c);
     let {start, finish, e} = this.prepare(context);
     return (start()
       .then(() => {
-        let {args} = context;
         let self = this.options.bind || context;
-        return callAndPromise(this.__fn__, self, ...args);
+        return callAndPromise(this.__fn__, self, ...context.args);
       })
       .catch((err) => {
         e.error = err;

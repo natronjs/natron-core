@@ -1,5 +1,6 @@
-/*
- * natron-core test
+/**
+ * @module natron-core
+ * test
  */
 import {task} from "../";
 

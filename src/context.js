@@ -1,8 +1,14 @@
 /**
  * @module natron-core
  */
-import type {Task} from "./task";
-import type {Thing, EventAggregator, publish} from "natron-core";
+import type {Thing, Task} from "./task";
+
+type EventAggregator = {
+  emit?: publish;
+  publish?: publish;
+  trigger?: publish;
+}
+type publish = (type: string, e: any) => void;
 
 export class TaskContext {
 
@@ -20,13 +26,14 @@ export class TaskContext {
   }
 
   constructor(init?: Object) {
-    if (init && init.stack && (init.stack instanceof Array)) {
+    init = init || {};
+    if (init.stack && !(init.stack instanceof Array)) {
       throw new TypeError(`${init.stack} is not an array`);
     }
-    if (init && init.args && !(init.args instanceof Array)) {
+    if (init.args && !(init.args instanceof Array)) {
       throw new TypeError(`${init.args} is not an array`);
     }
-    Object.assign(this, init, init && {
+    Object.assign(this, init, {
       stack: init.stack || [],
       args: init.args || [],
     });

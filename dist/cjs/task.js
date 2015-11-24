@@ -20,7 +20,7 @@ var Task = exports.Task = (function () {
 
     this.options = {};
 
-    _extends(this, meta, meta && meta.options && {
+    _extends(this, meta, meta && {
       options: _extends(this.options, meta.options)
     });
   }
@@ -34,21 +34,11 @@ var Task = exports.Task = (function () {
 
       return this.runWithContext({ args: args });
     }
-
-    /**
-     * @abstract
-     */
-
   }, {
     key: "runWithContext",
-    value: function runWithContext() {
+    value: function runWithContext(c) {
       throw new Error("Not implemented");
     }
-
-    /**
-     * @protected
-     */
-
   }, {
     key: "prepare",
     value: function prepare(context) {

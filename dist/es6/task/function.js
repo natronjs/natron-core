@@ -15,20 +15,12 @@ export class FunctionTask extends Task {
     this.__fn__ = fn;
   }
 
-  /**
-   * @override
-   */
-
-  /**
-   * @private
-   */
   runWithContext(c) {
     let context = TaskContext.create(c);
     let { start, finish, e } = this.prepare(context);
     return start().then(() => {
-      let { args } = context;
       let self = this.options.bind || context;
-      return callAndPromise(this.__fn__, self, ...args);
+      return callAndPromise(this.__fn__, self, ...context.args);
     }).catch(err => {
       e.error = err;
       context.publish("error", e);

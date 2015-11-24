@@ -16,13 +16,6 @@ export class TaskSet extends Task {
     things && this.addAll(things);
   }
 
-  /**
-   * @override
-   */
-
-  /**
-   * @private
-   */
   runWithContext(c) {
     let context = TaskContext.create(c);
     let { start, finish } = this.prepare(context);

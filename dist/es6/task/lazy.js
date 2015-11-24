@@ -15,13 +15,6 @@ export class LazyTask extends Task {
     this.__ident__ = ident;
   }
 
-  /**
-   * @override
-   */
-
-  /**
-   * @private
-   */
   runWithContext(c) {
     let context = TaskContext.create(c);
     let thing = context.resolve(this.__ident__);

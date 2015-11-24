@@ -39,14 +39,6 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
     return _this;
   }
 
-  /**
-   * @override
-   */
-
-  /**
-   * @private
-   */
-
   _createClass(TaskSequence, [{
     key: "runWithContext",
     value: function runWithContext(c) {
