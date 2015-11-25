@@ -28,5 +28,13 @@
     "babel-register": "^6.0.0",
     "eslint-config-natron": "^0.1.0-beta"
   },
+  "jspmNodeConversion": false,
+  "jspm": {
+    "main": "index",
+    "format": "cjs",
+    "directories": {
+      "lib": "dist/cjs"
+    }
+  },
   "license": "MIT"
 }
