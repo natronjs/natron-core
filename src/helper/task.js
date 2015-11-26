@@ -8,10 +8,11 @@ import {TaskSequence} from "../task/sequence";
 import {TaskSet} from "../task/set";
 import type {Thing} from "../task";
 
-const __MAP__: WeakMap<Task, WeakMap<any, Task>> = new WeakMap();
-
-export function task(thing: Thing, meta?: Object): Task {
+export function task(thing: Thing, meta?: Object|boolean): Task {
   if (isTask(thing)) {
+    if (meta) {
+      return thing.clone(meta !== true ? meta : null);
+    }
     return thing;
   }
   if (thing instanceof Array) {
@@ -29,7 +30,7 @@ export function task(thing: Thing, meta?: Object): Task {
   if (typeof thing === "string") {
     return new LazyTask(thing, meta);
   }
-  throw new TypeError(`${thing} cannot be converted to task`);
+  throw new TypeError(`${thing} cannot be converted to Task`);
 }
 
 export function isTask(thing: Thing): boolean {
@@ -44,13 +45,4 @@ function arrayIsSequence(arr: Array): boolean {
     }
   }
   return c % 2 === 0;
-}
-
-export function __map__(t: Task): Map {
-  let map = __MAP__.get(t);
-  if (!map) {
-    map = new Map();
-    __MAP__.set(t, map);
-  }
-  return map;
 }

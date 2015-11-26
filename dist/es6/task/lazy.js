@@ -16,7 +16,9 @@ export class LazyTask extends Task {
   }
 
   runWithContext(c) {
-    let context = TaskContext.create(c);
+    let context = TaskContext.create(c, this.args && {
+      args: this.args
+    });
     let thing = context.resolve(this.__ident__);
     if (thing) {
       let task = ensureTask(thing);

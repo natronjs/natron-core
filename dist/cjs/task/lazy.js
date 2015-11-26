@@ -40,7 +40,9 @@ var LazyTask = exports.LazyTask = (function (_Task) {
   _createClass(LazyTask, [{
     key: "runWithContext",
     value: function runWithContext(c) {
-      var context = _context.TaskContext.create(c);
+      var context = _context.TaskContext.create(c, this.args && {
+        args: this.args
+      });
       var thing = context.resolve(this.__ident__);
       if (thing) {
         var task = (0, _task2.task)(thing);

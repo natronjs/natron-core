@@ -13,6 +13,8 @@ var _context = require("../context");
 
 var _task2 = require("../helper/task");
 
+var _mapping = require("../helper/mapping");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -35,7 +37,32 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
 
     _this.__sequence__ = [];
 
-    things && _this.addAll(things);
+    if (things) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = things[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var thing = _step.value;
+
+          _this.add(thing);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
     return _this;
   }
 
@@ -44,7 +71,9 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
     value: function runWithContext(c) {
       var _this2 = this;
 
-      var context = _context.TaskContext.create(c);
+      var context = _context.TaskContext.create(c, this.args && {
+        args: this.args
+      });
 
       var _prepare = this.prepare(context);
 
@@ -60,6 +89,7 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
           });
         })();
       }
+
       var result = [];
 
       var _loop = function _loop(i) {
@@ -77,6 +107,7 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
       for (var i = 1; i < this.__sequence__.length; i++) {
         _loop(i);
       }
+
       if (!this.options.pipe) {
         promise = promise.then(function (value) {
           result.push(value);
@@ -92,47 +123,19 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
       if (thing instanceof _task.Task) {
         task = thing;
       } else {
-        task = (0, _task2.__map__)(this).get(thing);
+        task = _mapping.TaskMapping.get(this.__sequence__, thing);
         if (!task) {
           task = (0, _task2.task)(thing);
-          (0, _task2.__map__)(this).set(thing, task);
+          _mapping.TaskMapping.set(this.__sequence__, thing, task);
         }
       }
       this.__sequence__.push(task);
     }
   }, {
-    key: "addAll",
-    value: function addAll(things) {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = things[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var thing = _step.value;
-
-          this.add(thing);
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-    }
-  }, {
     key: "clear",
     value: function clear() {
       this.__sequence__.length = 0;
-      (0, _task2.__map__)(this).clear();
+      _mapping.TaskMapping.clear(this.__sequence__);
     }
   }, {
     key: "delete",
@@ -141,7 +144,7 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
       if (thing instanceof _task.Task) {
         task = thing;
       } else {
-        task = (0, _task2.__map__)(this).get(thing);
+        task = _mapping.TaskMapping.get(this.__sequence__, thing);
       }
       var index = this.__sequence__.indexOf(task);
       if (index !== -1) {
@@ -149,6 +152,18 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
         return true;
       }
       return false;
+    }
+  }, {
+    key: "has",
+    value: function has(thing) {
+      var task = undefined;
+      if (thing instanceof _task.Task) {
+        task = thing;
+      } else {
+        task = _mapping.TaskMapping.get(this.__sequence__, thing);
+      }
+      var index = this.__sequence__.indexOf(task);
+      return index !== -1;
     }
   }, {
     key: Symbol.iterator,

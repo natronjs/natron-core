@@ -3,7 +3,8 @@
  */
 import { Task } from "../task";
 import { TaskContext } from "../context";
-import { task as ensureTask, __map__ } from "../helper/task";
+import { task as ensureTask } from "../helper/task";
+import { TaskMapping } from "../helper/mapping";
 
 export class TaskSequence extends Task {
 
@@ -13,11 +14,18 @@ export class TaskSequence extends Task {
     }
     super(meta || things && things.meta);
     this.__sequence__ = [];
-    things && this.addAll(things);
+    if (things) {
+      for (let thing of things) {
+        this.add(thing);
+      }
+    }
   }
 
   runWithContext(c) {
-    let context = TaskContext.create(c);
+    let context = TaskContext.create(c, this.args && {
+      args: this.args
+    });
+
     let { start, finish } = this.prepare(context);
     let promise = start();
     if (this.__sequence__[0]) {
@@ -26,6 +34,7 @@ export class TaskSequence extends Task {
         return task.runWithContext(context);
       });
     }
+
     let result = [];
     for (let i = 1; i < this.__sequence__.length; i++) {
       let task = this.__sequence__[i];
@@ -38,6 +47,7 @@ export class TaskSequence extends Task {
         return task.runWithContext(context);
       });
     }
+
     if (!this.options.pipe) {
       promise = promise.then(value => {
         result.push(value);
@@ -56,24 +66,18 @@ export class TaskSequence extends Task {
     if (thing instanceof Task) {
       task = thing;
     } else {
-      task = __map__(this).get(thing);
+      task = TaskMapping.get(this.__sequence__, thing);
       if (!task) {
         task = ensureTask(thing);
-        __map__(this).set(thing, task);
+        TaskMapping.set(this.__sequence__, thing, task);
       }
     }
     this.__sequence__.push(task);
   }
 
-  addAll(things) {
-    for (let thing of things) {
-      this.add(thing);
-    }
-  }
-
   clear() {
     this.__sequence__.length = 0;
-    __map__(this).clear();
+    TaskMapping.clear(this.__sequence__);
   }
 
   delete(thing) {
@@ -81,7 +85,7 @@ export class TaskSequence extends Task {
     if (thing instanceof Task) {
       task = thing;
     } else {
-      task = __map__(this).get(thing);
+      task = TaskMapping.get(this.__sequence__, thing);
     }
     let index = this.__sequence__.indexOf(task);
     if (index !== -1) {
@@ -89,6 +93,17 @@ export class TaskSequence extends Task {
       return true;
     }
     return false;
+  }
+
+  has(thing) {
+    let task;
+    if (thing instanceof Task) {
+      task = thing;
+    } else {
+      task = TaskMapping.get(this.__sequence__, thing);
+    }
+    let index = this.__sequence__.indexOf(task);
+    return index !== -1;
   }
 
   [Symbol.iterator]() {

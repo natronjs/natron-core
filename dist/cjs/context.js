@@ -13,9 +13,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var TaskContext = exports.TaskContext = (function () {
   _createClass(TaskContext, null, [{
     key: "create",
-    value: function create(context) {
+    value: function create(context, init) {
       if (context instanceof TaskContext) {
-        return context;
+        return init ? context.clone(init) : context;
+      }
+      if (init) {
+        context = _extends({}, context, init);
       }
       return new TaskContext(context);
     }
@@ -24,33 +27,39 @@ var TaskContext = exports.TaskContext = (function () {
   function TaskContext(init) {
     _classCallCheck(this, TaskContext);
 
-    init = init || {};
-    if (init.stack && !(init.stack instanceof Array)) {
-      throw new TypeError(init.stack + " is not an array");
+    var init_ = init || {};
+    if (!init_.stack) {
+      init_.stack = [];
+    } else if (!(init_.stack instanceof Array)) {
+      throw new TypeError(init_.stack + " is not an array");
     }
-    if (init.args && !(init.args instanceof Array)) {
-      throw new TypeError(init.args + " is not an array");
+    if (!init_.args) {
+      init_.args = [];
+    } else if (!(init_.args instanceof Array)) {
+      throw new TypeError(init_.args + " is not an array");
     }
-    _extends(this, init, {
-      stack: init.stack || [],
-      args: init.args || []
-    });
+    _extends(this, init_);
   }
 
   _createClass(TaskContext, [{
     key: "clone",
     value: function clone(init) {
-      var cxproto = Object.getPrototypeOf(this);
-      var context = Object.create(cxproto);
-      var init_ = { parent: this };
-      if (init && init.stack === true) {
-        init_.stack = this.stack.slice();
+      var proto = Object.getPrototypeOf(this);
+      var cntx_ = Object.create(proto);
+      var init_ = {
+        original: this
+      };
+      if (init) {
+        init_ = _extends({}, init, init_);
+        if (init_.stack === true) {
+          init_.stack = this.stack.slice();
+        }
+        if (init_.args === true) {
+          init_.args = this.args.slice();
+        }
       }
-      if (init && init.args === true) {
-        init_.args = this.args.slice();
-      }
-      _extends(context, this, init, init_);
-      return context;
+      _extends(cntx_, this, init_);
+      return cntx_;
     }
   }, {
     key: "publish",
@@ -70,7 +79,7 @@ var TaskContext = exports.TaskContext = (function () {
     key: "resolve",
     value: function resolve(name) {
       var task = undefined,
-          depth = this.stack.length - 1;
+          depth = this.depth;
       while (task = this.stack[depth--]) {
         if (task.resolver) {
           var rs = task.resolver;
@@ -81,20 +90,24 @@ var TaskContext = exports.TaskContext = (function () {
           if (fn) {
             return fn.call(rs, name, this);
           }
-          return;
+          return null;
         }
       }
     }
   }, {
-    key: "rootTask",
+    key: "depth",
+    get: function get() {
+      return this.stack.length - 1;
+    }
+  }, {
+    key: "root",
     get: function get() {
       return this.stack[0];
     }
   }, {
-    key: "currentTask",
+    key: "task",
     get: function get() {
-      var depth = this.stack.length - 1;
-      return this.stack[depth];
+      return this.stack[this.depth];
     }
   }]);
 

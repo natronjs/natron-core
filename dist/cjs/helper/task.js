@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.task = task;
 exports.isTask = isTask;
-exports.__map__ = __map__;
 
 var _task = require("../task");
 
@@ -17,12 +16,11 @@ var _sequence = require("../task/sequence");
 
 var _set = require("../task/set");
 
-var __MAP__ = new WeakMap(); /**
-                              * @module natron-core
-                              */
-
 function task(thing, meta) {
   if (isTask(thing)) {
+    if (meta) {
+      return thing.clone(meta !== true ? meta : null);
+    }
     return thing;
   }
   if (thing instanceof Array) {
@@ -40,8 +38,10 @@ function task(thing, meta) {
   if (typeof thing === "string") {
     return new _lazy.LazyTask(thing, meta);
   }
-  throw new TypeError(thing + " cannot be converted to task");
-}
+  throw new TypeError(thing + " cannot be converted to Task");
+} /**
+   * @module natron-core
+   */
 
 function isTask(thing) {
   return thing instanceof _task.Task;
@@ -55,13 +55,4 @@ function arrayIsSequence(arr) {
     }
   }
   return c % 2 === 0;
-}
-
-function __map__(t) {
-  var map = __MAP__.get(t);
-  if (!map) {
-    map = new Map();
-    __MAP__.set(t, map);
-  }
-  return map;
 }

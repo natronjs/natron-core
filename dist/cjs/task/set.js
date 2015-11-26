@@ -13,6 +13,8 @@ var _context = require("../context");
 
 var _task2 = require("../helper/task");
 
+var _mapping = require("../helper/mapping");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -35,7 +37,32 @@ var TaskSet = exports.TaskSet = (function (_Task) {
 
     _this.__set__ = new Set();
 
-    things && _this.addAll(things);
+    if (things) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = things[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var thing = _step.value;
+
+          _this.add(thing);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
     return _this;
   }
 
@@ -44,7 +71,9 @@ var TaskSet = exports.TaskSet = (function (_Task) {
     value: function runWithContext(c) {
       var _this2 = this;
 
-      var context = _context.TaskContext.create(c);
+      var context = _context.TaskContext.create(c, this.args && {
+        args: this.args
+      });
 
       var _prepare = this.prepare(context);
 
@@ -53,28 +82,28 @@ var TaskSet = exports.TaskSet = (function (_Task) {
 
       return start().then(function () {
         var promises = [];
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
 
         try {
-          for (var _iterator = _this2.__set__[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var task = _step.value;
+          for (var _iterator2 = _this2.__set__[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var task = _step2.value;
 
             var context_ = context.clone({ stack: true });
             promises.push(task.runWithContext(context_));
           }
         } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
             }
           } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
+            if (_didIteratorError2) {
+              throw _iteratorError2;
             }
           }
         }
@@ -89,47 +118,19 @@ var TaskSet = exports.TaskSet = (function (_Task) {
       if (thing instanceof _task.Task) {
         task = thing;
       } else {
-        task = (0, _task2.__map__)(this).get(thing);
+        task = _mapping.TaskMapping.get(this.__set__, thing);
         if (!task) {
           task = (0, _task2.task)(thing);
-          (0, _task2.__map__)(this).set(thing, task);
+          _mapping.TaskMapping.set(this.__set__, thing, task);
         }
       }
       this.__set__.add(task);
     }
   }, {
-    key: "addAll",
-    value: function addAll(things) {
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = things[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var thing = _step2.value;
-
-          this.add(thing);
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-    }
-  }, {
     key: "clear",
     value: function clear() {
       this.__set__.clear();
-      (0, _task2.__map__)(this).clear();
+      _mapping.TaskMapping.clear(this.__set__);
     }
   }, {
     key: "delete",
@@ -138,12 +139,9 @@ var TaskSet = exports.TaskSet = (function (_Task) {
       if (thing instanceof _task.Task) {
         task = thing;
       } else {
-        task = (0, _task2.__map__)(this).get(thing);
-        if (task) {
-          (0, _task2.__map__)(this).delete(thing);
-        }
+        task = _mapping.TaskMapping.get(this.__set__, thing);
       }
-      return this.__set__.delete(task);
+      return this.__set__delete(task);
     }
   }, {
     key: "has",
@@ -152,7 +150,7 @@ var TaskSet = exports.TaskSet = (function (_Task) {
       if (thing instanceof _task.Task) {
         task = thing;
       } else {
-        task = (0, _task2.__map__)(this).get(thing);
+        task = _mapping.TaskMapping.get(this.__set__, thing);
       }
       return this.__set__.has(task);
     }

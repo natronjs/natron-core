@@ -6,6 +6,7 @@
 /build
 /test
 /.editorconfig
+/.eslintignore
 /.eslintrc
 /.natronrc
 /.travis.yml

@@ -3,7 +3,8 @@
  */
 import { Task } from "../task";
 import { TaskContext } from "../context";
-import { task as ensureTask, __map__ } from "../helper/task";
+import { task as ensureTask } from "../helper/task";
+import { TaskMapping } from "../helper/mapping";
 
 export class TaskSet extends Task {
 
@@ -13,11 +14,17 @@ export class TaskSet extends Task {
     }
     super(meta || things && things.meta);
     this.__set__ = new Set();
-    things && this.addAll(things);
+    if (things) {
+      for (let thing of things) {
+        this.add(thing);
+      }
+    }
   }
 
   runWithContext(c) {
-    let context = TaskContext.create(c);
+    let context = TaskContext.create(c, this.args && {
+      args: this.args
+    });
     let { start, finish } = this.prepare(context);
     return start().then(() => {
       let promises = [];
@@ -38,24 +45,18 @@ export class TaskSet extends Task {
     if (thing instanceof Task) {
       task = thing;
     } else {
-      task = __map__(this).get(thing);
+      task = TaskMapping.get(this.__set__, thing);
       if (!task) {
         task = ensureTask(thing);
-        __map__(this).set(thing, task);
+        TaskMapping.set(this.__set__, thing, task);
       }
     }
     this.__set__.add(task);
   }
 
-  addAll(things) {
-    for (let thing of things) {
-      this.add(thing);
-    }
-  }
-
   clear() {
     this.__set__.clear();
-    __map__(this).clear();
+    TaskMapping.clear(this.__set__);
   }
 
   delete(thing) {
@@ -63,12 +64,9 @@ export class TaskSet extends Task {
     if (thing instanceof Task) {
       task = thing;
     } else {
-      task = __map__(this).get(thing);
-      if (task) {
-        __map__(this).delete(thing);
-      }
+      task = TaskMapping.get(this.__set__, thing);
     }
-    return this.__set__.delete(task);
+    return this.__set__delete(task);
   }
 
   has(thing) {
@@ -76,7 +74,7 @@ export class TaskSet extends Task {
     if (thing instanceof Task) {
       task = thing;
     } else {
-      task = __map__(this).get(thing);
+      task = TaskMapping.get(this.__set__, thing);
     }
     return this.__set__.has(task);
   }

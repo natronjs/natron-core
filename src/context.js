@@ -15,51 +15,63 @@ export class TaskContext {
   stack: Array<Task>;
   args: Array<any>;
 
-  parent: TaskContext;
+  original: TaskContext;
   eventAggregator: EventAggregator|publish;
 
-  static create(context?: TaskContext|Object): TaskContext {
+  static create(context?: TaskContext|Object, init?: Object): TaskContext {
     if (context instanceof TaskContext) {
-      return context;
+      return init ? context.clone(init) : context;
+    }
+    if (init) {
+      context = Object.assign({}, context, init);
     }
     return new TaskContext(context);
   }
 
   constructor(init?: Object) {
-    init = init || {};
-    if (init.stack && !(init.stack instanceof Array)) {
-      throw new TypeError(`${init.stack} is not an array`);
+    let init_ = init || {};
+    if (!init_.stack) {
+      init_.stack = [];
+    } else if (!(init_.stack instanceof Array)) {
+      throw new TypeError(`${init_.stack} is not an array`);
     }
-    if (init.args && !(init.args instanceof Array)) {
-      throw new TypeError(`${init.args} is not an array`);
+    if (!init_.args) {
+      init_.args = [];
+    } else if (!(init_.args instanceof Array)) {
+      throw new TypeError(`${init_.args} is not an array`);
     }
-    Object.assign(this, init, {
-      stack: init.stack || [],
-      args: init.args || [],
-    });
+    Object.assign(this, init_);
   }
 
-  get rootTask(): Task {
+  get depth(): number {
+    return this.stack.length - 1;
+  }
+
+  get root(): Task {
     return this.stack[0];
   }
 
-  get currentTask(): Task {
-    let depth = this.stack.length - 1;
-    return this.stack[depth];
+  get task(): Task {
+    return this.stack[this.depth];
   }
 
   clone(init?: Object): TaskContext {
-    let cxproto = Object.getPrototypeOf(this);
-    let context = Object.create(cxproto);
-    let init_ = {parent: this};
-    if (init && init.stack === true) {
-      init_.stack = this.stack.slice();
+    let proto = Object.getPrototypeOf(this);
+    let cntx_ = Object.create(proto);
+    let init_ = {
+      original: this,
+    };
+    if (init) {
+      init_ = Object.assign({}, init, init_);
+      if (init_.stack === true) {
+        init_.stack = this.stack.slice();
+      }
+      if (init_.args === true) {
+        init_.args = this.args.slice();
+      }
     }
-    if (init && init.args === true) {
-      init_.args = this.args.slice();
-    }
-    Object.assign(context, this, init, init_);
-    return context;
+    Object.assign(cntx_, this, init_);
+    return cntx_;
   }
 
   publish(type: string, e: any): void {
@@ -76,7 +88,7 @@ export class TaskContext {
   }
 
   resolve(name: string): Thing {
-    let task, depth = this.stack.length - 1;
+    let task, depth = this.depth;
     while ((task = this.stack[depth--])) {
       if (task.resolver) {
         let rs = task.resolver;
@@ -87,7 +99,7 @@ export class TaskContext {
         if (fn) {
           return fn.call(rs, name, this);
         }
-        return;
+        return null;
       }
     }
   }

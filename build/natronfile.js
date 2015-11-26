@@ -16,7 +16,7 @@ function builder(target: string, options) {
   );
 }
 
-export var build = task.set([
+let build = task.set([
   builder("cjs", {
     "babelrc": false,
     "plugins": [
@@ -38,3 +38,5 @@ export var build = task.set([
     ],
   }),
 ]);
+
+export {build};
