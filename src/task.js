@@ -31,7 +31,7 @@ export class Task {
     throw new Error("Not implemented");
   }
 
-  clone(init?: Object): Task {
+  clone(init?: Object, deep?: boolean): Task {
     let proto = Object.getPrototypeOf(this);
     let task_ = Object.create(proto);
     Object.assign(task_, this);

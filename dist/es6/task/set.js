@@ -40,6 +40,15 @@ export class TaskSet extends Task {
     return this.__set__.size;
   }
 
+  clone(init, deep) {
+    let task = super.clone(init, deep);
+    if (deep) {
+      task.__set__ = new Set(this.__set__);
+      TaskMapping.clone(this.__set__, task.__set__);
+    }
+    return task;
+  }
+
   add(thing) {
     let task;
     if (thing instanceof Task) {
@@ -66,7 +75,7 @@ export class TaskSet extends Task {
     } else {
       task = TaskMapping.get(this.__set__, thing);
     }
-    return this.__set__delete(task);
+    return this.__set__.delete(task);
   }
 
   has(thing) {

@@ -14,6 +14,11 @@ const TaskMapping = {
     return map;
   },
 
+  clone(obj, newObj) {
+    let map = this.mapping(obj);
+    __MAP__.set(newObj, new Map(map));
+  },
+
   clear(obj) {
     this.mapping(obj).clear();
   },

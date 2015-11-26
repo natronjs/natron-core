@@ -38,7 +38,7 @@ var Task = exports.Task = (function () {
     }
   }, {
     key: "clone",
-    value: function clone(init) {
+    value: function clone(init, deep) {
       var proto = Object.getPrototypeOf(this);
       var task_ = Object.create(proto);
       _extends(task_, this);

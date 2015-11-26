@@ -61,6 +61,15 @@ export class TaskSequence extends Task {
     return this.__sequence__.length;
   }
 
+  clone(init, deep) {
+    let task = super.clone(init, deep);
+    if (deep) {
+      task.__sequence__ = this.__sequence__.slice();
+      TaskMapping.clone(this.__sequence__, task.__sequence__);
+    }
+    return task;
+  }
+
   add(thing) {
     let task;
     if (thing instanceof Task) {

@@ -16,6 +16,10 @@ var TaskMapping = {
     }
     return map;
   },
+  clone: function clone(obj, newObj) {
+    var map = this.mapping(obj);
+    __MAP__.set(newObj, new Map(map));
+  },
   clear: function clear(obj) {
     this.mapping(obj).clear();
   },
