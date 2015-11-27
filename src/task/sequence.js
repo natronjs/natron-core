@@ -27,26 +27,33 @@ export class TaskSequence extends Task {
     let context = TaskContext.create(c, this.args && {
       args: this.args,
     });
-
-    let {start, finish} = this.prepare(context);
+    let {start, finish, error} = this.prepare(context);
     let promise = start();
-    if (this.__sequence__[0]) {
-      let task = this.__sequence__[0];
-      promise = promise.then(() => {
-        return task.runWithContext(context);
-      });
-    }
 
+    let settle = this.options.settle;
     let result = [];
-    for (let i = 1; i < this.__sequence__.length; i++) {
+
+    for (let i = 0; i < this.__sequence__.length; i++) {
       let task = this.__sequence__[i];
+
       promise = promise.then((value) => {
-        if (this.options.pipe) {
-          let context_ = context.clone({args: [value]});
-          return task.runWithContext(context_);
+        let context_ = context;
+        if (i) {
+          if (this.options.pipe) {
+            context_ = context.clone({args: [value]});
+          }
+          result.push(value);
         }
-        result.push(value);
-        return task.runWithContext(context);
+        let promise_ = task.runWithContext(context_);
+
+        if (settle instanceof Function) {
+          promise_ = promise_.catch((err) => settle({
+            task, context: context_, error: err,
+          }));
+        } else if (settle) {
+          promise_ = promise_.catch(() => null);
+        }
+        return promise_;
       });
     }
 
@@ -56,7 +63,11 @@ export class TaskSequence extends Task {
         return result;
       });
     }
-    return promise.then(finish);
+
+    return (promise
+      .catch(error)
+      .then(finish)
+    );
   }
 
   get size(): number {
