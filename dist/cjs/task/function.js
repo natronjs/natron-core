@@ -54,10 +54,13 @@ var FunctionTask = exports.FunctionTask = (function (_Task) {
 
       var start = _prepare.start;
       var finish = _prepare.finish;
-      var e = _prepare.e;
+      var error = _prepare.error;
+
+      var promise = start();
 
       var hasBind = this.options.hasOwnProperty("bind");
-      return start().then(function () {
+
+      promise = promise.then(function () {
         var self = context;
         var args = context.args;
         if (hasBind && _this2.options.bind !== null) {
@@ -67,11 +70,9 @@ var FunctionTask = exports.FunctionTask = (function (_Task) {
           args = [context];
         }
         return _promise.callAndPromise.apply(undefined, [_this2.__fn__, self].concat(_toConsumableArray(args)));
-      }).catch(function (err) {
-        e.error = err;
-        context.publish("error", e);
-        return Promise.reject(err);
-      }).then(finish);
+      });
+
+      return promise.catch(error).then(finish);
     }
   }]);
 

@@ -81,32 +81,42 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
 
       var start = _prepare.start;
       var finish = _prepare.finish;
+      var error = _prepare.error;
 
       var promise = start();
-      if (this.__sequence__[0]) {
-        (function () {
-          var task = _this2.__sequence__[0];
-          promise = promise.then(function () {
-            return task.runWithContext(context);
-          });
-        })();
-      }
 
+      var settle = this.options.settle;
       var result = [];
 
       var _loop = function _loop(i) {
         var task = _this2.__sequence__[i];
+
         promise = promise.then(function (value) {
-          if (_this2.options.pipe) {
-            var context_ = context.clone({ args: [value] });
-            return task.runWithContext(context_);
+          var context_ = context;
+          if (i) {
+            if (_this2.options.pipe) {
+              context_ = context.clone({ args: [value] });
+            }
+            result.push(value);
           }
-          result.push(value);
-          return task.runWithContext(context);
+          var promise_ = task.runWithContext(context_);
+
+          if (settle instanceof Function) {
+            promise_ = promise_.catch(function (err) {
+              return settle({
+                task: task, context: context_, error: err
+              });
+            });
+          } else if (settle) {
+            promise_ = promise_.catch(function () {
+              return null;
+            });
+          }
+          return promise_;
         });
       };
 
-      for (var i = 1; i < this.__sequence__.length; i++) {
+      for (var i = 0; i < this.__sequence__.length; i++) {
         _loop(i);
       }
 
@@ -116,7 +126,8 @@ var TaskSequence = exports.TaskSequence = (function (_Task) {
           return result;
         });
       }
-      return promise.then(finish);
+
+      return promise.catch(error).then(finish);
     }
   }, {
     key: "clone",

@@ -81,19 +81,41 @@ var TaskSet = exports.TaskSet = (function (_Task) {
 
       var start = _prepare.start;
       var finish = _prepare.finish;
+      var error = _prepare.error;
 
-      return start().then(function () {
+      var promise = start();
+
+      var settle = this.options.settle;
+
+      promise = promise.then(function () {
         var promises = [];
         var _iteratorNormalCompletion2 = true;
         var _didIteratorError2 = false;
         var _iteratorError2 = undefined;
 
         try {
-          for (var _iterator2 = _this2.__set__[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var _loop = function _loop() {
             var task = _step2.value;
 
             var context_ = context.clone({ stack: true });
-            promises.push(task.runWithContext(context_));
+            var promise_ = task.runWithContext(context_);
+
+            if (settle instanceof Function) {
+              promise_ = promise_.catch(function (err) {
+                return settle({
+                  task: task, context: context_, error: err
+                });
+              });
+            } else if (settle) {
+              promise_ = promise_.catch(function () {
+                return null;
+              });
+            }
+            promises.push(promise_);
+          };
+
+          for (var _iterator2 = _this2.__set__[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            _loop();
           }
         } catch (err) {
           _didIteratorError2 = true;
@@ -111,7 +133,9 @@ var TaskSet = exports.TaskSet = (function (_Task) {
         }
 
         return Promise.all(promises);
-      }).then(finish);
+      });
+
+      return promise.catch(error).then(finish);
     }
   }, {
     key: "clone",

@@ -25,15 +25,30 @@ export class TaskSet extends Task {
     let context = TaskContext.create(c, this.args && {
       args: this.args
     });
-    let { start, finish } = this.prepare(context);
-    return start().then(() => {
+    let { start, finish, error } = this.prepare(context);
+    let promise = start();
+
+    let settle = this.options.settle;
+
+    promise = promise.then(() => {
       let promises = [];
       for (let task of this.__set__) {
         let context_ = context.clone({ stack: true });
-        promises.push(task.runWithContext(context_));
+        let promise_ = task.runWithContext(context_);
+
+        if (settle instanceof Function) {
+          promise_ = promise_.catch(err => settle({
+            task, context: context_, error: err
+          }));
+        } else if (settle) {
+          promise_ = promise_.catch(() => null);
+        }
+        promises.push(promise_);
       }
       return Promise.all(promises);
-    }).then(finish);
+    });
+
+    return promise.catch(error).then(finish);
   }
 
   get size() {

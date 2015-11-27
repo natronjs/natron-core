@@ -54,18 +54,40 @@ var Task = exports.Task = (function () {
       var _this = this;
 
       var e = { task: this, context: context };
+
       var start = function start() {
         context.stack.push(_this);
+        if (_this.onStart) {
+          _this.onStart(e);
+        }
         context.publish("start", e);
         return Promise.resolve(e);
       };
+
       var finish = function finish(value) {
         e.value = value;
+        if (_this.onFinish) {
+          _this.onFinish(e);
+        }
         context.publish("finish", e);
         context.stack.pop();
         return value;
       };
-      return { start: start, finish: finish, e: e };
+
+      var error = function error(err) {
+        e.error = err;
+        if (_this.onError) {
+          _this.onError(e);
+        }
+        if (_this.__fn__) {
+          context.publish("error", e);
+        }
+        if (e.hasOwnProperty("value")) {
+          return e.value;
+        }
+        return Promise.reject(err);
+      };
+      return { start: start, finish: finish, error: error, e: e };
     }
   }]);
 
