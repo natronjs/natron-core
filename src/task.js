@@ -44,17 +44,39 @@ export class Task {
 
   prepare(context: TaskContext): Object {
     let e = {task: this, context};
+
     let start = () => {
       context.stack.push(this);
+      if (this.onStart) {
+        this.onStart(e);
+      }
       context.publish("start", e);
       return Promise.resolve(e);
     };
+
     let finish = (value) => {
       e.value = value;
+      if (this.onFinish) {
+        this.onFinish(e);
+      }
       context.publish("finish", e);
       context.stack.pop();
       return value;
     };
-    return {start, finish, e};
+
+    let error = (err) => {
+      e.error = err;
+      if (this.onError) {
+        this.onError(e);
+      }
+      if (this.__fn__) {
+        context.publish("error", e);
+      }
+      if (e.hasOwnProperty("value")) {
+        return e.value;
+      }
+      return Promise.reject(err);
+    };
+    return {start, finish, error, e};
   }
 }

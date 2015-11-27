@@ -22,25 +22,25 @@ export class FunctionTask extends Task {
     let context = TaskContext.create(c, this.args && {
       args: this.args,
     });
-    let {start, finish, e} = this.prepare(context);
+    let {start, finish, error} = this.prepare(context);
+    let promise = start();
+
     let hasBind = this.options.hasOwnProperty("bind");
-    return (start()
-      .then(() => {
-        let self = context;
-        let args = context.args;
-        if (hasBind && this.options.bind !== null) {
-          self = this.options.bind;
-        }
-        if (this.options.injectContext) {
-          args = [context];
-        }
-        return callAndPromise(this.__fn__, self, ...args);
-      })
-      .catch((err) => {
-        e.error = err;
-        context.publish("error", e);
-        return Promise.reject(err);
-      })
+
+    promise = promise.then(() => {
+      let self = context;
+      let args = context.args;
+      if (hasBind && this.options.bind !== null) {
+        self = this.options.bind;
+      }
+      if (this.options.injectContext) {
+        args = [context];
+      }
+      return callAndPromise(this.__fn__, self, ...args);
+    });
+
+    return (promise
+      .catch(error)
       .then(finish)
     );
   }
